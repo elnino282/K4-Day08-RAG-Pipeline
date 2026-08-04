@@ -47,11 +47,11 @@ LEGAL_METADATA = {
         "source_url": "https://wiki.leagueoflegends.com/en-us/TFT:Item",
         "document_version": "2026-08-04",
     },
-    "tft-meta-guide-methodology": {
-        "title": "TFT Meta Guide Methodology",
+    "riot-tft-patch-notes-index": {
+        "title": "Official TFT Patch Notes Index",
         "customer_role": "player",
-        "category": "meta-methodology",
-        "source_url": "https://www.metatft.com/units",
+        "category": "patch-notes",
+        "source_url": "https://teamfighttactics.leagueoflegends.com/en-us/news/tags/patch-notes/",
         "document_version": "2026-08-04",
     },
 }
