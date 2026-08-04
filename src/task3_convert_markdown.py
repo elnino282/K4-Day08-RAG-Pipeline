@@ -33,26 +33,26 @@ if hasattr(sys.stderr, "reconfigure"):
 
 
 LEGAL_METADATA = {
-    "shopee-privacy-policy": {
-        "title": "Chính sách Bảo mật Shopee Việt Nam",
-        "customer_role": "both",
-        "category": "privacy",
-        "source_url": "https://help.shopee.vn/portal/4/article/77244",
-        "document_version": "2026-04-06",
+    "riot-tft-data-policy": {
+        "title": "Riot TFT Data and App Policy Summary",
+        "customer_role": "developer",
+        "category": "official-data-policy",
+        "source_url": "https://developer.riotgames.com/docs/tft",
+        "document_version": "2026-08-04",
     },
-    "shopee-returns-refunds-policy": {
-        "title": "Chính sách Trả hàng và Hoàn tiền Shopee",
-        "customer_role": "both",
-        "category": "returns-refunds",
-        "source_url": "https://help.shopee.vn/portal/4/article/77251",
-        "document_version": "2026-03-11",
+    "tft-item-mechanics-wiki": {
+        "title": "TFT Item Mechanics Wiki Summary",
+        "customer_role": "player",
+        "category": "item-mechanics",
+        "source_url": "https://wiki.leagueoflegends.com/en-us/TFT:Item",
+        "document_version": "2026-08-04",
     },
-    "shopee-product-listing-regulations": {
-        "title": "Quy định về đăng bán sản phẩm trên Shopee",
-        "customer_role": "seller",
-        "category": "product-listing",
-        "source_url": "https://help.shopee.vn/portal/4/article/77246",
-        "document_version": "not-stated",
+    "tft-meta-guide-methodology": {
+        "title": "TFT Meta Guide Methodology",
+        "customer_role": "player",
+        "category": "meta-methodology",
+        "source_url": "https://www.metatft.com/units",
+        "document_version": "2026-08-04",
     },
 }
 

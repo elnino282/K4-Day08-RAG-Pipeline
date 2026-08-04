@@ -25,12 +25,12 @@ COLLECTION_NAME = "ecommerce_support_docs"
 
 
 def _infer_customer_role(document_path: Path) -> str:
-    """Infer the audience label required by the K4 lab from its filename."""
+    """Infer the audience label used by the GameTFT knowledge base."""
     name = document_path.stem.lower()
-    if any(keyword in name for keyword in ("listing", "seller", "nguoi-ban")):
-        return "seller"
-    if any(keyword in name for keyword in ("return", "refund", "buyer", "nguoi-mua")):
-        return "buyer"
+    if any(keyword in name for keyword in ("developer", "brand", "policy")):
+        return "developer"
+    if any(keyword in name for keyword in ("competitive", "compete", "esports", "rules")):
+        return "competitive-player"
     return "both"
 
 

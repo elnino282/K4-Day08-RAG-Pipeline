@@ -13,8 +13,8 @@ Cài đặt:
                                    # thiếu bước này sẽ báo lỗi
                                    # "BrowserType.launch: Executable doesn't exist"
 
-Gợi ý chủ đề: theo dõi đơn hàng, đổi phương thức thanh toán, bằng chứng hoàn tiền,
-mua hàng xuyên biên giới.
+Gợi ý chủ đề Gaming Meta Guide: patch notes, tier list, champion/unit item
+build, composition guide, item mechanics, và dữ liệu wiki/game API.
 
 Lưu ý: một số trang help center dùng JavaScript render (SPA) — nếu crawl về chỉ thấy
 tiêu đề mà không có nội dung, đổi sang bài viết khác cùng domain thay vì cố xử lý.
@@ -48,11 +48,11 @@ def setup_directory():
 
 
 ARTICLE_URLS = [
-    "https://help.shopee.vn/portal/4/article/79198",
-    "https://help.shopee.vn/portal/4/article/189473",
-    "https://help.shopee.vn/portal/4/article/79084",
-    "https://help.shopee.vn/portal/4/article/79556",
-    "https://help.shopee.vn/portal/4/article/77247",
+    "https://www.metatft.com/units",
+    "https://meta-tft.com/en/items",
+    "https://tftguide.org/en",
+    "https://teamfighttactics.leagueoflegends.com/en-us/news/tags/patch-notes/",
+    "https://developer.riotgames.com/docs/tft",
 ]
 
 
@@ -60,29 +60,29 @@ ARTICLE_URLS = [
 # lọc theo vai trò khách hàng mà không cần suy đoán lại từ nội dung.
 ARTICLE_METADATA = {
     ARTICLE_URLS[0]: {
-        "title": "Các phương thức thanh toán hiện có trên Shopee",
-        "customer_role": "buyer",
-        "category": "payment",
+        "title": "TFT champion item build statistics",
+        "customer_role": "player",
+        "category": "champion-builds",
     },
     ARTICLE_URLS[1]: {
-        "title": "Thời gian nhận tiền hoàn và cách kiểm tra tiền hoàn",
-        "customer_role": "buyer",
-        "category": "refund",
+        "title": "TFT item statistics and item usage",
+        "customer_role": "player",
+        "category": "item-meta",
     },
     ARTICLE_URLS[2]: {
-        "title": "Xử lý khi đơn hàng cập nhật sai trạng thái hoặc chưa nhận được hàng",
-        "customer_role": "buyer",
-        "category": "order-tracking",
+        "title": "TFT guide compositions champions traits augments items",
+        "customer_role": "player",
+        "category": "guide-index",
     },
     ARTICLE_URLS[3]: {
-        "title": "Thời gian giao đơn hàng Quốc tế",
-        "customer_role": "buyer",
-        "category": "cross-border-shipping",
+        "title": "Teamfight Tactics patch notes index",
+        "customer_role": "player",
+        "category": "patch-notes",
     },
     ARTICLE_URLS[4]: {
-        "title": "Chính sách Cấm/Hạn chế Sản phẩm",
-        "customer_role": "seller",
-        "category": "prohibited-products",
+        "title": "Riot TFT Data Dragon and API docs",
+        "customer_role": "developer",
+        "category": "official-data",
     },
 }
 
