@@ -41,13 +41,17 @@ def _load_corpus_from_chroma() -> list[dict]:
     )
 
     corpus: list[dict] = []
-    for doc, meta in zip(result["documents"], result["metadatas"]):
-        corpus.append({"content": doc, "metadata": meta})
+    for chunk_id, doc, meta in zip(
+        result["ids"], result["documents"], result["metadatas"]
+    ):
+        metadata = dict(meta or {})
+        metadata.setdefault("chunk_id", chunk_id)
+        corpus.append({"content": doc, "metadata": metadata})
     return corpus
 
 
 # ---------------------------------------------------------------------------
-# Tokenizer đơn giản hỗ trợ tiếng Việt và tiếng Anh
+# Tokenizer đơn giản cho nội dung tiếng Việt
 # ---------------------------------------------------------------------------
 
 def _tokenize(text: str) -> list[str]:
@@ -61,6 +65,19 @@ def _tokenize(text: str) -> list[str]:
     # Giữ lại chữ cái (kể cả Unicode/tiếng Việt), số; tách bằng mọi ký tự khác
     tokens = re.findall(r"[\w\u00C0-\u024F\u1EA0-\u1EF9]+", text)
     return [t for t in tokens if len(t) > 1]
+
+
+def _searchable_text(document: dict) -> str:
+    """Ghép nội dung với metadata mô tả để BM25 tìm được tên/chủ đề tài liệu."""
+    metadata = document.get("metadata") or {}
+    metadata_text = " ".join(
+        str(metadata.get(field, ""))
+        for field in ("title", "category", "source", "customer_role")
+    )
+    # Các metadata như ``order-tracking`` và đường dẫn dùng dấu phân cách;
+    # đổi chúng thành khoảng trắng để query ``order tracking`` khớp từng từ.
+    metadata_text = re.sub(r"[_\-/\\.]+", " ", metadata_text)
+    return f"{document.get('content', '')} {metadata_text}".strip()
 
 
 # ---------------------------------------------------------------------------
@@ -96,7 +113,7 @@ def build_bm25_index(corpus: list[dict]):
     """
     from rank_bm25 import BM25Okapi
 
-    tokenized_corpus = [_tokenize(doc["content"]) for doc in corpus]
+    tokenized_corpus = [_tokenize(_searchable_text(doc)) for doc in corpus]
     bm25 = BM25Okapi(tokenized_corpus)
     return bm25
 
@@ -105,7 +122,11 @@ def build_bm25_index(corpus: list[dict]):
 # Public API
 # ---------------------------------------------------------------------------
 
-def lexical_search(query: str, top_k: int = 10) -> list[dict]:
+def lexical_search(
+    query: str,
+    top_k: int = 10,
+    metadata_filter: dict | None = None,
+) -> list[dict]:
     """
     Tìm kiếm từ khóa sử dụng BM25.
 
@@ -122,7 +143,8 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
         Sorted by score descending.
         Chỉ trả về các kết quả có score > 0 (có từ khóa khớp).
     """
-    import numpy as np
+    if not isinstance(query, str) or not query.strip() or top_k <= 0:
+        return []
 
     bm25, corpus = _get_bm25_index()
 
@@ -133,18 +155,24 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
 
     scores = bm25.get_scores(tokenized_query)  # ndarray shape (N,)
 
-    # Lấy top_k indices sắp xếp giảm dần
-    top_indices = np.argsort(scores)[::-1][:top_k]
+    ranked: list[tuple[float, str, int]] = []
+    for idx, raw_score in enumerate(scores):
+        score = float(raw_score)
+        metadata = corpus[idx]["metadata"]
+        matches_filter = not metadata_filter or all(
+            metadata.get(key) == value for key, value in metadata_filter.items()
+        )
+        if score > 0 and matches_filter:
+            ranked.append((score, metadata["chunk_id"], idx))
+    ranked.sort(key=lambda item: (-item[0], item[1]))
 
     results: list[dict] = []
-    for idx in top_indices:
-        if scores[idx] <= 0:
-            break  # Các phần tử sau cũng ≤ 0, không có từ khớp
+    for score, _, idx in ranked[:top_k]:
         results.append(
             {
                 "content": corpus[idx]["content"],
-                "score": round(float(scores[idx]), 4),
-                "metadata": corpus[idx]["metadata"],
+                "score": round(score, 6),
+                "metadata": dict(corpus[idx]["metadata"]),
             }
         )
 
