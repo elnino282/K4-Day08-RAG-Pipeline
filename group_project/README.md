@@ -69,9 +69,78 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 
 ## Kiến Trúc Hệ Thống
 
+> Tài liệu kiến trúc đầy đủ: [../ARCHITECTURE.md](../ARCHITECTURE.md)
+
+### Tổng quan luồng
+
+```mermaid
+flowchart TB
+    subgraph OFFLINE["Offline — chạy khi dữ liệu thay đổi"]
+        T1["Task 1-2<br/>Thu thập + Crawl"] --> T3["Task 3<br/>MarkItDown"]
+        T3 --> T4["Task 4<br/>Chunk 800/100<br/>text-embedding-3-small"]
+        T3 --> T8U["Task 8<br/>Upload PageIndex"]
+    end
+
+    T4 --> CHROMA[("chroma_db/<br/>cosine, 1536-dim")]
+    T8U --> PICACHE[(".pageindex_doc_ids.json")]
+
+    subgraph ONLINE["Online — mỗi câu hỏi"]
+        UI["app.py<br/>Streamlit chat"] --> GEN["Task 10<br/>generate_with_citation"]
+        GEN --> PIPE["Task 9<br/>retrieve()"]
+        PIPE --> DENSE["Task 5<br/>Semantic (cosine)"]
+        PIPE --> SPARSE["Task 6<br/>BM25"]
+        DENSE --> GATE{"cosine top-1<br/>>= 0.39 ?"}
+        SPARSE --> RRF["Task 7<br/>RRF k=60"]
+        GATE -- có --> RRF
+        GATE -- không --> PI["Task 8<br/>PageIndex fallback"]
+        RRF --> CTX["reorder front+back[::-1]<br/>+ format context"]
+        PI --> CTX
+        CTX --> LLM["LLM<br/>OpenRouter -> OpenAI -> Gemini"]
+        LLM --> ANS["Câu trả lời có citation<br/>+ danh sách nguồn"]
+    end
+
+    CHROMA --> DENSE
+    CHROMA --> SPARSE
+    PICACHE --> PI
+    ANS --> UI
 ```
-[Vẽ diagram kiến trúc ở đây]
+
+### Tầng UI (bài nhóm)
+
+```mermaid
+flowchart LR
+    APP["app.py"] --> ADAPT["ui/rag_adapter.py<br/>chuẩn hoá response,<br/>bọc mọi exception"]
+    APP --> STATE["ui/state.py<br/>conversations, top_k,<br/>processing_query_token"]
+    APP --> VIEW["ui/chat, composer,<br/>sidebar, sources, layout"]
+    ADAPT --> GEN["src/task10_generation"]
+    GEN --> PIPE["src/task9_retrieval_pipeline"]
 ```
+
+### Thành phần & tham số
+
+| Thành phần | Lựa chọn | File |
+| :-- | :-- | :-- |
+| Chunking | recursive, size 800, overlap 100 | [../src/task4_chunking_indexing.py](../src/task4_chunking_indexing.py) |
+| Embedding | `text-embedding-3-small`, 1536-dim, L2-normalized | [../src/task4_chunking_indexing.py](../src/task4_chunking_indexing.py) |
+| Vector store | ChromaDB persistent, collection `ecommerce_support_docs`, cosine | [../src/task4_chunking_indexing.py](../src/task4_chunking_indexing.py) |
+| Dense retrieval | cosine similarity, `score = 1 - distance` | [../src/task5_semantic_search.py](../src/task5_semantic_search.py) |
+| Sparse retrieval | `BM25Okapi`, corpus nạp từ ChromaDB | [../src/task6_lexical_search.py](../src/task6_lexical_search.py) |
+| Fusion | RRF `k = 60` (Jina cross-encoder có sẵn, không nằm trong luồng mặc định) | [../src/task7_reranking.py](../src/task7_reranking.py) |
+| Fallback | PageIndex vectorless, ngưỡng cosine `0.39` | [../src/task8_pageindex_vectorless.py](../src/task8_pageindex_vectorless.py) |
+| Pipeline | `fetch_k = top_k * 3`, gắn nhãn `source = hybrid \| pageindex` | [../src/task9_retrieval_pipeline.py](../src/task9_retrieval_pipeline.py) |
+| Generation | temp 0.3, top_p 0.9, 5 chunks, reorder `front + back[::-1]` | [../src/task10_generation.py](../src/task10_generation.py) |
+| UI | Streamlit, hiển thị nguồn + `dense_score`, `top_k` chỉnh 1–10 | [../app.py](../app.py), [../src/ui/](../src/ui/) |
+
+### Ba quyết định thiết kế đáng lưu ý
+
+1. **BM25 nạp corpus từ ChromaDB, không đọc lại `.md`.** Dense và sparse vì thế chạy trên cùng
+   một tập chunk và cùng `chunk_id` — điều kiện bắt buộc để RRF ghép được kết quả 2 ranker.
+2. **Fallback so ngưỡng với điểm cosine gốc**, không phải điểm RRF. Điểm RRF đỉnh ≈ `1/(60+1)`
+   ≈ 0.016 bất kể nội dung liên quan hay không; so với nó thì nhánh PageIndex không bao giờ chạy.
+   Ngưỡng 0.39 lấy từ đo thật: query liên quan 0.403–0.759, query lạc đề 0.130–0.380.
+3. **UI hiển thị `dense_score`, không hiển thị `rrf_score`.** Nếu hiển thị điểm RRF dạng phần
+   trăm, một chunk khớp hoàn hảo vẫn hiện "3% phù hợp". Chunk chỉ do BM25 tìm ra thì ẩn badge
+   (BM25 không nằm trong thang `[0,1]`).
 
 ---
 
