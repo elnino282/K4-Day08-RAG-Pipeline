@@ -7,7 +7,7 @@ patch_context: "Set 17 CommunityDragon item catalog resolved from set item refer
 source_url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
 document_version: "CommunityDragon latest snapshot"
-source_file: "article_08.json"
+source_file: "article_03.json"
 ---
 # TFT Set 17 full item catalog from CommunityDragon
 

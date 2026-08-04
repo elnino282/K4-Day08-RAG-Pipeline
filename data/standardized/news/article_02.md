@@ -7,7 +7,7 @@ patch_context: "Set 17 item recommendation examples plus role-based fallback rul
 source_url: "https://www.metatft.com/units; https://op.gg/tft/meta-trends/champion; https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
 document_version: "not-stated"
-source_file: "article_07.json"
+source_file: "article_02.json"
 ---
 # TFT champion item recommendation data
 

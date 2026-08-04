@@ -7,7 +7,7 @@ patch_context: "Set 17 CommunityDragon augment catalog resolved from set augment
 source_url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
 document_version: "CommunityDragon latest snapshot"
-source_file: "article_10.json"
+source_file: "article_05.json"
 ---
 # TFT Set 17 full augment catalog from CommunityDragon
 
