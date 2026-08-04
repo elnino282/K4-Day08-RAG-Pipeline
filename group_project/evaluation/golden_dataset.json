@@ -6,8 +6,11 @@
     "question": "Shopee hỗ trợ những phương thức thanh toán nào?",
     "expected_answer": "Shopee hỗ trợ Ví ShopeePay, thẻ tín dụng/ghi nợ, trả góp bằng thẻ tín dụng, thanh toán QR, ứng dụng ngân hàng, thẻ nội địa NAPAS, Apple Pay, Google Pay, thanh toán khi nhận hàng (COD) và SPayLater. Tài liệu có điểm không nhất quán: phần mở đầu ghi 09 hình thức nhưng danh sách thực tế có 10 mục.",
     "expected_context": "Danh sách phương thức thanh toán trong KB được đánh số từ 1 đến 10, từ Ví ShopeePay đến SPayLater.",
-    "expected_sources": ["data/standardized/news/article_01.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_01.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_numeric_constraints"
   },
   {
     "id": "TC02",
@@ -16,8 +19,11 @@
     "question": "Shopee chấp nhận những loại thẻ tín dụng hoặc ghi nợ nào và giá trị đơn tối thiểu là bao nhiêu?",
     "expected_answer": "Shopee chấp nhận thẻ Visa, Mastercard, JCB và American Express (AMEX). Giá trị thanh toán của đơn hàng, gồm phí vận chuyển và chi phí phát sinh, phải từ 10.000 VNĐ trở lên.",
     "expected_context": "Thẻ tín dụng/ghi nợ thuộc hệ thống Visa, Mastercard, JCB và AMEX; chỉ áp dụng từ 10.000 VNĐ.",
-    "expected_sources": ["data/standardized/news/article_01.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_01.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_numeric_constraints"
   },
   {
     "id": "TC03",
@@ -26,8 +32,11 @@
     "question": "Hạn mức thanh toán của Apple Pay và Google Pay trên Shopee khác nhau thế nào?",
     "expected_answer": "Apple Pay áp dụng cho đơn hàng từ 10.000 VNĐ đến 25.000.000 VNĐ, còn Google Pay áp dụng từ 10.000 VNĐ đến 120.000.000 VNĐ. Các hạn mức tính trên giá trị thanh toán cuối cùng đã gồm phí vận chuyển và chi phí phát sinh.",
     "expected_context": "Apple Pay có hạn mức 10.000–25.000.000 VNĐ; Google Pay có hạn mức 10.000–120.000.000 VNĐ.",
-    "expected_sources": ["data/standardized/news/article_01.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_01.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_numeric_constraints"
   },
   {
     "id": "TC04",
@@ -36,8 +45,11 @@
     "question": "SPayLater cho phép trả trong bao nhiêu kỳ và có phải ai cũng sử dụng được không?",
     "expected_answer": "SPayLater hỗ trợ 01, 02, 03 và 06 kỳ; kỳ hạn 06 kỳ chỉ áp dụng cho một nhóm người dùng nhất định. Người dùng phải kích hoạt dịch vụ, được cấp hạn mức và đáp ứng điều kiện theo chính sách Shopee nên không phải tài khoản nào cũng sử dụng được.",
     "expected_context": "SPayLater có các kỳ 01, 02, 03 và 06; dịch vụ chỉ khả dụng cho người dùng thỏa mãn điều kiện.",
-    "expected_sources": ["data/standardized/news/article_01.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_01.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_numeric_constraints"
   },
   {
     "id": "TC05",
@@ -46,8 +58,11 @@
     "question": "Thanh toán bằng thẻ tín dụng thì bao lâu nhận được tiền hoàn?",
     "expected_answer": "Sau khi Shopee chấp nhận hoàn tiền, tiền được hoàn về chính thẻ tín dụng hoặc ghi nợ ban đầu trong khoảng 7–14 ngày làm việc, tùy ngân hàng.",
     "expected_context": "Thẻ tín dụng/ghi nợ được hoàn về thẻ tín dụng/ghi nợ trong 7–14 ngày làm việc.",
-    "expected_sources": ["data/standardized/news/article_02.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_02.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_refund_channel"
   },
   {
     "id": "TC06",
@@ -56,8 +71,11 @@
     "question": "Đơn thanh toán COD được hoàn tiền qua đâu và mất bao lâu?",
     "expected_answer": "Tiền của đơn COD có thể được hoàn về Ví ShopeePay trong vòng 24 giờ, với điều kiện ví hoạt động bình thường và còn liên kết với tài khoản Shopee tại thời điểm xử lý.",
     "expected_context": "Thanh toán khi nhận hàng có thể hoàn qua Ví ShopeePay trong 24 giờ nếu ví hoạt động bình thường.",
-    "expected_sources": ["data/standardized/news/article_02.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_02.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_refund_channel"
   },
   {
     "id": "TC07",
@@ -66,8 +84,11 @@
     "question": "Nếu thanh toán một phần bằng SPayLater và một phần bằng QR thì tiền được hoàn thế nào?",
     "expected_answer": "Phần thanh toán bằng SPayLater được hoàn vào số dư khả dụng SPayLater trong 24 giờ hoặc cập nhật vào hóa đơn SPayLater trong 3–5 ngày làm việc. Phần thanh toán bằng QR được hoàn vào Số dư Tài khoản Shopee trong vòng 24 giờ tiếp theo.",
     "expected_context": "Khoản SPayLater hoàn về số dư khả dụng trong 24 giờ hoặc hóa đơn trong 3–5 ngày; khoản QR hoàn về Số dư Tài khoản Shopee trong 24 giờ.",
-    "expected_sources": ["data/standardized/news/article_02.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_02.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "fact_retrieval_and_refund_channel"
   },
   {
     "id": "TC08",
@@ -76,8 +97,11 @@
     "question": "Đơn hàng báo đã giao nhưng tôi chưa nhận được thì phải làm gì?",
     "expected_answer": "Nếu chưa quá 24 giờ từ lúc trạng thái bị cập nhật sai, người mua nên tiếp tục chờ đơn vị vận chuyển. Nếu đã quá 24 giờ mà vẫn chưa nhận hàng, hãy chọn Trả hàng/Hoàn tiền với lý do Chưa nhận được hàng. Shopee cập nhật tiến trình qua email hoặc Thông báo > Cập nhật đơn hàng trong 3–5 ngày làm việc.",
     "expected_context": "Trong 24 giờ thì tiếp tục chờ; quá 24 giờ thì tạo yêu cầu Trả hàng/Hoàn tiền với lý do Chưa nhận được hàng.",
-    "expected_sources": ["data/standardized/news/article_03.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_03.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "procedural_answering"
   },
   {
     "id": "TC09",
@@ -86,8 +110,11 @@
     "question": "Yêu cầu hoàn tiền vì chưa nhận được hàng có cần cung cấp bằng chứng không?",
     "expected_answer": "Không. Người mua không cần cung cấp bằng chứng cho yêu cầu Trả hàng/Hoàn tiền có lý do Chưa nhận được hàng.",
     "expected_context": "KB ghi rõ không cần cung cấp bằng chứng đối với lý do Chưa nhận được hàng.",
-    "expected_sources": ["data/standardized/news/article_03.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_03.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "procedural_answering"
   },
   {
     "id": "TC10",
@@ -96,8 +123,11 @@
     "question": "Đơn hàng quốc tế dự kiến giao trong bao lâu?",
     "expected_answer": "Thời gian dự kiến là 7–15 ngày kể từ khi thanh toán, không tính ngày lễ tại Việt Nam, ngày lễ tại quốc gia nơi shop hoạt động và ngày nghỉ của đơn vị vận chuyển. Đơn có thể chậm do thời tiết, thủ tục hải quan hoặc kỳ nghỉ lễ lớn.",
     "expected_context": "Đơn quốc tế dự kiến giao trong 7–15 ngày kể từ lúc thanh toán, không gồm ngày lễ và ngày nghỉ của đơn vị vận chuyển.",
-    "expected_sources": ["data/standardized/news/article_04.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_04.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "time_range_and_caveat_retrieval"
   },
   {
     "id": "TC11",
@@ -106,8 +136,11 @@
     "question": "Tôi có thể yêu cầu trả hàng hoàn tiền trong thời hạn bao lâu?",
     "expected_answer": "Thông thường, người mua có thể gửi yêu cầu trong vòng 15 ngày kể từ khi đơn được cập nhật giao hàng thành công. Riêng thực phẩm tươi sống và đông lạnh, thời hạn là 24 giờ.",
     "expected_context": "Thời hạn chung là 15 ngày; thực phẩm tươi sống và đông lạnh có thời hạn 24 giờ.",
-    "expected_sources": ["data/standardized/legal/shopee-returns-refunds-policy.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/legal/shopee-returns-refunds-policy.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "policy_reasoning"
   },
   {
     "id": "TC12",
@@ -116,8 +149,11 @@
     "question": "Những trường hợp nào được yêu cầu trả hàng hoặc hoàn tiền?",
     "expected_answer": "Các lý do gồm không nhận được hàng; đơn thiếu sản phẩm; hàng giả; sản phẩm lỗi hoặc hư hỏng khi vận chuyển; giao sai sản phẩm, kích thước hoặc màu sắc; sản phẩm khác đáng kể so với mô tả; sản phẩm hết hạn; người bán đồng ý và Shopee xác nhận; hoặc sản phẩm nguyên vẹn, nguyên bao bì nhưng người mua không còn nhu cầu nếu đủ điều kiện Trả hàng COM.",
     "expected_context": "Chính sách liệt kê các lý do hợp lệ từ không nhận được hàng, thiếu hàng, hàng giả, lỗi/hư hỏng, giao sai, khác mô tả, hết hạn đến Trả hàng COM.",
-    "expected_sources": ["data/standardized/legal/shopee-returns-refunds-policy.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/legal/shopee-returns-refunds-policy.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "policy_reasoning"
   },
   {
     "id": "TC13",
@@ -126,8 +162,11 @@
     "question": "Ai được trả hàng vì không còn nhu cầu và hạn mức là bao nhiêu?",
     "expected_answer": "Trả hàng COM áp dụng cho thành viên Shopee hạng Vàng, Kim Cương hoặc người dùng Gói ShopeeVIP. Hạng Vàng và Kim Cương không bị giới hạn số lần theo tháng nếu không vi phạm chính sách. Người dùng ShopeeVIP có tối đa 15 lần trong mỗi tháng dương lịch.",
     "expected_context": "Người mua hợp lệ gồm hạng Vàng, Kim Cương và ShopeeVIP; ShopeeVIP có hạn mức 15 lần mỗi tháng dương lịch.",
-    "expected_sources": ["data/standardized/legal/shopee-returns-refunds-policy.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/legal/shopee-returns-refunds-policy.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "policy_reasoning"
   },
   {
     "id": "TC14",
@@ -136,8 +175,11 @@
     "question": "Ảnh sản phẩm đăng bán phải đáp ứng những yêu cầu nào?",
     "expected_answer": "Phải có ít nhất một ảnh thật do người bán tự chụp và sản phẩm thật phải chiếm ít nhất 40% diện tích ảnh. Ảnh phải rõ ràng, phản ánh đúng tình trạng sản phẩm, không chứa thông tin shop, liên hệ hoặc thanh toán không liên quan; ngôn ngữ trên phông nền phải là tiếng Việt và không có nội dung ghê rợn, khỏa thân hoặc gợi dục.",
     "expected_context": "Ít nhất một ảnh thật do người bán chụp; sản phẩm chiếm ít nhất 40% ảnh; phông nền dùng tiếng Việt.",
-    "expected_sources": ["data/standardized/legal/shopee-product-listing-regulations.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/legal/shopee-product-listing-regulations.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "seller_policy_compliance"
   },
   {
     "id": "TC15",
@@ -146,8 +188,11 @@
     "question": "Tôi có được đặt tên sản phẩm là ‘Sản phẩm hot - Bán chạy - Miễn phí vận chuyển’ không?",
     "expected_answer": "Không. Tên sản phẩm không được chứa các từ như Sản phẩm hot, Bán chạy, Giảm giá hoặc Miễn phí vận chuyển. Tên phải mô tả chính xác sản phẩm, viết bằng tiếng Việt có dấu, rõ ràng và phù hợp với hình ảnh.",
     "expected_context": "Tên sản phẩm không được chứa Sản phẩm hot, Bán chạy, Giảm giá hoặc Miễn phí vận chuyển.",
-    "expected_sources": ["data/standardized/legal/shopee-product-listing-regulations.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/legal/shopee-product-listing-regulations.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "seller_policy_compliance"
   },
   {
     "id": "TC16",
@@ -160,7 +205,8 @@
       "data/standardized/legal/shopee-product-listing-regulations.md",
       "data/standardized/news/article_05.md"
     ],
-    "answerable": true
+    "answerable": true,
+    "evaluation_focus": "seller_policy_compliance"
   },
   {
     "id": "TC17",
@@ -169,8 +215,11 @@
     "question": "Tôi có thể đăng bán cá cảnh hoặc hamster trên Shopee không?",
     "expected_answer": "Không. Chính sách cấm/hạn chế liệt kê động vật và chế phẩm từ động vật, bao gồm cá và hamster, trong nhóm không được phép mua bán trên Shopee.",
     "expected_context": "Danh sách động vật và chế phẩm từ động vật bị cấm có nêu cá và hamster.",
-    "expected_sources": ["data/standardized/news/article_05.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_05.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "prohibited_item_policy"
   },
   {
     "id": "TC18",
@@ -179,8 +228,11 @@
     "question": "Người bán vi phạm chính sách cấm sản phẩm có thể bị xử lý thế nào?",
     "expected_answer": "Sản phẩm có thể bị xóa; tài khoản có thể bị giới hạn quyền, đình chỉ hoặc xóa; số dư Shopee có thể bị cấn trừ và quyền rút tiền bị phong tỏa. Người bán còn có thể chịu chế tài theo chính sách hoặc pháp luật như xử phạt hành chính, xử lý hình sự hoặc bồi thường thiệt hại.",
     "expected_context": "Chế tài gồm xóa sản phẩm, giới hạn/đình chỉ/xóa tài khoản, cấn trừ số dư, phong tỏa rút tiền và xử lý theo pháp luật.",
-    "expected_sources": ["data/standardized/news/article_05.md"],
-    "answerable": true
+    "expected_sources": [
+      "data/standardized/news/article_05.md"
+    ],
+    "answerable": true,
+    "evaluation_focus": "prohibited_item_policy"
   },
   {
     "id": "NEG01",
@@ -190,7 +242,8 @@
     "expected_answer": "Tôi không thể xác minh thông tin này từ nguồn hiện có.",
     "expected_context": "KB chỉ nêu thời gian giao hàng quốc tế dự kiến, không cung cấp mức phí vận chuyển cụ thể.",
     "expected_sources": [],
-    "answerable": false
+    "answerable": false,
+    "evaluation_focus": "abstention_when_not_supported"
   },
   {
     "id": "NEG02",
@@ -200,6 +253,7 @@
     "expected_answer": "Tôi không thể xác minh thông tin này từ nguồn hiện có.",
     "expected_context": "KB không xác nhận MoMo là kênh hoàn tiền được hỗ trợ.",
     "expected_sources": [],
-    "answerable": false
+    "answerable": false,
+    "evaluation_focus": "abstention_when_not_supported"
   }
 ]
