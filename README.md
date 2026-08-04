@@ -603,10 +603,10 @@ flowchart TB
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Chu Quang Hiếu | 2A202601344 | Thu thập dữ liệu, Chunking, Embedding & ChromaDB Indexing (Task 1-4) | Hoàn thành |
+| Hồ Ngọc Quỳnh | 2A202601684 | Tích hợp Retrieval Pipeline (Hybrid + Rerank + PageIndex) & Streamlit Chat UI (Task 5-9, app.py) | Hoàn thành |
+| Nguyễn Đình Liên Thành | 2A202601790 | Xây dựng LLM Generation với Citation, Conversation Memory & Prompting (Task 10) | Hoàn thành |
+| Hoàng Văn Huy | 2A202601356 | Xây dựng Golden Dataset, RAG Evaluation Pipeline & Báo cáo kết quả (Yêu cầu 2) | Hoàn thành |
 
 ---
 
@@ -616,10 +616,14 @@ flowchart TB
 # Cài đặt dependencies
 pip install -r requirements.txt
 
-# Chạy app
+# 1. Chạy RAG Chatbot Streamlit App
 streamlit run app.py
-# hoặc
-chainlit run app.py
+
+# 2. Chạy test suite chấm điểm Pipeline Kỹ thuật (Task 1-10)
+pytest tests/ -v
+
+# 3. Chạy RAG Evaluation Pipeline (Bài nhóm Yêu cầu 2)
+python group_project/evaluation/eval_pipeline.py
 ```
 
 ---
