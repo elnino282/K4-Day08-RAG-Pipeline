@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import MutableMapping
 from uuid import uuid4
 
-from src.ui.constants import MAX_TITLE_LENGTH, NEW_CONVERSATION_LABEL
+from src.ui.constants import DEFAULT_TOP_K, MAX_TITLE_LENGTH, NEW_CONVERSATION_LABEL
 
 
 def _new_conversation() -> dict:
@@ -29,7 +29,9 @@ def initialize_state(state: MutableMapping) -> None:
     state.setdefault("is_loading", False)
     state.setdefault("sidebar_collapsed", False)
     state.setdefault("processing_query_token", None)
+    state.setdefault("top_k", DEFAULT_TOP_K)
     _sync_messages_view(state)
+
 
 
 def get_active_conversation(state: MutableMapping) -> dict:
@@ -104,3 +106,43 @@ def complete_query(state: MutableMapping, token: str, *, answer: str, sources: l
     state["processing_query_token"] = None
     _sync_messages_view(state)
     return True
+
+
+def delete_conversation(state: MutableMapping, conversation_id: str) -> bool:
+    if state.get("is_loading"):
+        return False
+    conversations = state.get("conversations", [])
+    index_to_remove = None
+    for index, item in enumerate(conversations):
+        if item["id"] == conversation_id:
+            index_to_remove = index
+            break
+    if index_to_remove is None:
+        return False
+
+    conversations.pop(index_to_remove)
+    if not conversations:
+        new_conv = _new_conversation()
+        state["conversations"] = [new_conv]
+        state["active_conversation"] = new_conv["id"]
+    elif state.get("active_conversation") == conversation_id:
+        state["active_conversation"] = conversations[0]["id"]
+
+    _sync_messages_view(state)
+    return True
+
+
+def clear_all_conversations(state: MutableMapping) -> None:
+    if state.get("is_loading"):
+        return
+    new_conv = _new_conversation()
+    state["conversations"] = [new_conv]
+    state["active_conversation"] = new_conv["id"]
+    state["pending_query"] = None
+    _sync_messages_view(state)
+
+
+def set_top_k(state: MutableMapping, top_k: int) -> None:
+    if 1 <= top_k <= 10:
+        state["top_k"] = top_k
+

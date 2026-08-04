@@ -15,9 +15,32 @@ SOURCE_LABEL = "Nguồn tham khảo"
 MAX_TITLE_LENGTH = 42
 DEFAULT_TOP_K = 5
 
-SUGGESTIONS = [
-    "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
-    "Những phương thức thanh toán nào được hỗ trợ?",
-    "Làm sao để thay đổi phương thức thanh toán đơn hàng?",
-    "Quy định đăng bán sản phẩm dành cho người bán là gì?",
+PROMPT_CARDS = [
+    {
+        "icon": "🔄",
+        "category": "Đổi trả & Hoàn tiền",
+        "title": "Thời hạn trả hàng/hoàn tiền",
+        "query": "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
+    },
+    {
+        "icon": "💳",
+        "category": "Thanh toán",
+        "title": "Phương thức thanh toán",
+        "query": "Những phương thức thanh toán nào được hỗ trợ?",
+    },
+    {
+        "icon": "⚙️",
+        "category": "Hỗ trợ đơn hàng",
+        "title": "Thay đổi thanh toán",
+        "query": "Làm sao để thay đổi phương thức thanh toán đơn hàng?",
+    },
+    {
+        "icon": "🏪",
+        "category": "Quy định người bán",
+        "title": "Đăng bán sản phẩm",
+        "query": "Quy định đăng bán sản phẩm dành cho người bán là gì?",
+    },
 ]
+
+SUGGESTIONS = [card["query"] for card in PROMPT_CARDS]
+

@@ -41,7 +41,8 @@ def main() -> None:
                 st.markdown(query.strip())
             with st.chat_message("assistant", avatar="🤖"):
                 loading_indicator(LOADING_TEXT)
-                result = run_rag_query(query.strip())
+                top_k = st.session_state.get("top_k", 5)
+                result = run_rag_query(query.strip(), top_k=top_k)
                 complete_query(st.session_state, token, **result)
                 if result["error"]:
                     st.error(result["error"])

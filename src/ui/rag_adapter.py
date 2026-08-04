@@ -27,14 +27,14 @@ def _normalize_source(source: Any) -> dict | None:
     }
 
 
-def run_rag_query(query: str, generate_fn: Callable[..., Any] | None = None) -> dict:
+def run_rag_query(query: str, generate_fn: Callable[..., Any] | None = None, top_k: int = DEFAULT_TOP_K) -> dict:
     """Return the stable UI result shape for any RAG success/failure response."""
     if generate_fn is None:
         from src.task10_generation import generate_with_citation
 
         generate_fn = generate_with_citation
     try:
-        response = generate_fn(query, top_k=DEFAULT_TOP_K)
+        response = generate_fn(query, top_k=top_k)
     except Exception as error:  # The UI must surface pipeline failures safely.
         return {"answer": "", "sources": [], "error": str(error) or "RAG request failed."}
 

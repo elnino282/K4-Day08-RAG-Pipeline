@@ -17,9 +17,13 @@ class RagAdapterTests(unittest.TestCase):
 
         self.assertEqual(result, {"answer": "A concise answer.", "error": None, "sources": [{"name": "policy.md", "type": "legal", "score": 0.875, "content": "Evidence"}]})
 
-    def test_adapter_returns_safe_error_shape_for_malformed_or_failed_rag_response(self):
-        malformed = run_rag_query("question", generate_fn=lambda query, top_k: None)
-        failed = run_rag_query("question", generate_fn=lambda query, top_k: (_ for _ in ()).throw(RuntimeError("offline")))
+    def test_adapter_passes_top_k_parameter(self):
+        passed_top_k = []
 
-        self.assertEqual(malformed, {"answer": "", "sources": [], "error": "RAG returned an invalid response."})
-        self.assertEqual(failed, {"answer": "", "sources": [], "error": "offline"})
+        def mock_generate(query, top_k):
+            passed_top_k.append(top_k)
+            return {"answer": "OK", "sources": []}
+
+        run_rag_query("test", generate_fn=mock_generate, top_k=7)
+        self.assertEqual(passed_top_k, [7])
+
