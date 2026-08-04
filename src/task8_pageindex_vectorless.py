@@ -186,13 +186,69 @@ def upload_documents(force: bool = False) -> dict[str, str]:
 # Public API: pageindex_search
 # ---------------------------------------------------------------------------
 
+def _query_single_doc(args: tuple) -> list[dict]:
+    """Worker function: query một document và trả về list results.
+    Dùng bởi ThreadPoolExecutor trong pageindex_search().
+    """
+    client, stem, doc_id, query = args
+    results: list[dict] = []
+    try:
+        # Gửi query
+        resp = client.submit_query(doc_id=doc_id, query=query)
+        retrieval_id = resp.get("retrieval_id") or resp.get("id")
+        if not retrieval_id:
+            return results
+
+        # Poll cho đến khi completed
+        deadline = time.time() + RETRIEVAL_POLL_TIMEOUT
+        retrieval = None
+        while time.time() < deadline:
+            retrieval = client.get_retrieval(retrieval_id)
+            status = retrieval.get("status", "")
+            if status in ("completed", "failed"):
+                break
+            time.sleep(2)
+
+        if not retrieval or retrieval.get("status") != "completed":
+            return results
+
+        # Parse retrieved_nodes
+        # Schema: {"retrieved_nodes": [{"relevant_contents": [[{"section_title", "relevant_content"}]]}]}
+        rank = 1
+        for node in retrieval.get("retrieved_nodes", []):
+            for group in node.get("relevant_contents", []):
+                for item in (group if isinstance(group, list) else [group]):
+                    content = item.get("relevant_content", "").strip()
+                    section = item.get("section_title", "")
+                    if not content:
+                        continue
+                    results.append(
+                        {
+                            "content": content,
+                            "score": round(1.0 / rank, 4),
+                            "metadata": {
+                                "source": stem,
+                                "section": section,
+                                "doc_id": doc_id,
+                            },
+                            "source": "pageindex",
+                        }
+                    )
+                    rank += 1
+
+    except Exception as exc:
+        print(f"  ⚠ Lỗi khi query doc_id={doc_id}: {exc}")
+
+    return results
+
+
 def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
     """
     Vectorless retrieval sử dụng PageIndex.
     Dùng làm fallback khi hybrid search không có kết quả tốt.
 
     Quy trình:
-        1. Gửi query lên từng doc_id đã upload
+        1. Gửi query lên toàn bộ doc_id song song (ThreadPoolExecutor)
         2. Poll cho đến khi retrieval hoàn thành
         3. Parse retrieved_nodes → relevant_contents
         4. Gán score theo rank (1.0 / rank)
@@ -209,6 +265,8 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
             'source': 'pageindex'   # Đánh dấu nguồn retrieval
         }
     """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     client = _get_client()
     cache = _load_doc_id_cache()
 
@@ -216,58 +274,20 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
         print("  ⚠ Chưa có doc_id nào. Hãy chạy upload_documents() trước.")
         return []
 
+    # Tạo args cho mỗi document
+    task_args = [(client, stem, doc_id, query) for stem, doc_id in cache.items()]
+
     all_results: list[dict] = []
 
-    for stem, doc_id in cache.items():
-        try:
-            # Gửi query
-            resp = client.submit_query(doc_id=doc_id, query=query)
-            retrieval_id = resp.get("retrieval_id") or resp.get("id")
-            if not retrieval_id:
-                continue
-
-            # Poll cho đến khi completed
-            deadline = time.time() + RETRIEVAL_POLL_TIMEOUT
-            retrieval = None
-            while time.time() < deadline:
-                retrieval = client.get_retrieval(retrieval_id)
-                status = retrieval.get("status", "")
-                if status == "completed":
-                    break
-                if status == "failed":
-                    break
-                time.sleep(2)
-
-            if not retrieval or retrieval.get("status") != "completed":
-                continue
-
-            # Parse retrieved_nodes
-            # Schema: {"retrieved_nodes": [{"relevant_contents": [[{"section_title", "relevant_content"}]]}]}
-            rank = 1
-            for node in retrieval.get("retrieved_nodes", []):
-                for group in node.get("relevant_contents", []):
-                    for item in (group if isinstance(group, list) else [group]):
-                        content = item.get("relevant_content", "").strip()
-                        section = item.get("section_title", "")
-                        if not content:
-                            continue
-                        all_results.append(
-                            {
-                                "content": content,
-                                "score": round(1.0 / rank, 4),
-                                "metadata": {
-                                    "source": stem,
-                                    "section": section,
-                                    "doc_id": doc_id,
-                                },
-                                "source": "pageindex",
-                            }
-                        )
-                        rank += 1
-
-        except Exception as exc:
-            print(f"  ⚠ Lỗi khi query doc_id={doc_id}: {exc}")
-            continue
+    # Query tất cả documents song song — giảm thời gian từ N×T xuống ~T
+    with ThreadPoolExecutor(max_workers=min(len(task_args), 8)) as executor:
+        futures = {executor.submit(_query_single_doc, args): args[1] for args in task_args}
+        for future in as_completed(futures):
+            try:
+                all_results.extend(future.result())
+            except Exception as exc:
+                stem = futures[future]
+                print(f"  ⚠ Thread lỗi cho {stem}: {exc}")
 
     # Sắp xếp theo score giảm dần và trả top_k
     all_results.sort(key=lambda x: x["score"], reverse=True)
