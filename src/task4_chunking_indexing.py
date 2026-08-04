@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -50,6 +51,41 @@ def _infer_customer_role(document_path: Path) -> str:
     return "both"
 
 
+def _parse_front_matter(content: str) -> tuple[str, dict]:
+    """Tách front matter do Task 3 sinh ra khỏi phần nội dung Markdown."""
+    lines = content.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return content.strip(), {}
+
+    try:
+        closing_index = next(
+            index
+            for index, line in enumerate(lines[1:], start=1)
+            if line.strip() == "---"
+        )
+    except StopIteration:
+        return content.strip(), {}
+
+    metadata: dict = {}
+    for line in lines[1:closing_index]:
+        if ":" not in line:
+            continue
+        key, raw_value = line.split(":", 1)
+        key = key.strip()
+        raw_value = raw_value.strip()
+        if not key:
+            continue
+        try:
+            value = json.loads(raw_value)
+        except json.JSONDecodeError:
+            value = raw_value.strip("\"'")
+        if isinstance(value, (str, int, float, bool)):
+            metadata[key] = value
+
+    body = "\n".join(lines[closing_index + 1 :]).strip()
+    return body, metadata
+
+
 def load_documents() -> list[dict]:
     """Load non-empty Markdown files with source, type, and audience metadata."""
     if not STANDARDIZED_DIR.exists():
@@ -59,10 +95,11 @@ def load_documents() -> list[dict]:
 
     for md_file in sorted(STANDARDIZED_DIR.rglob("*.md")):
         try:
-            content = md_file.read_text(encoding="utf-8").strip()
+            raw_content = md_file.read_text(encoding="utf-8").strip()
         except UnicodeDecodeError as exc:
             raise ValueError(f"Không thể đọc file UTF-8: {md_file}") from exc
 
+        content, front_matter = _parse_front_matter(raw_content)
         if not content:
             continue
 
@@ -72,13 +109,16 @@ def load_documents() -> list[dict]:
             else "unknown"
         )
 
+        source = md_file.relative_to(STANDARDIZED_DIR).as_posix()
         documents.append(
             {
                 "content": content,
                 "metadata": {
-                    "source": md_file.relative_to(STANDARDIZED_DIR).as_posix(),
+                    **front_matter,
+                    "source": source,
                     "type": doc_type,
-                    "customer_role": _infer_customer_role(md_file),
+                    "customer_role": front_matter.get("customer_role")
+                    or _infer_customer_role(md_file),
                 },
             }
         )
@@ -128,7 +168,8 @@ def get_openai_client():
             "OPENAI_API_KEY chưa được cấu hình. "
             "Thêm OPENAI_API_KEY=sk-... vào file .env của dự án."
         )
-    return OpenAI(api_key=api_key)
+    # Mạng lớp học có thể bắt tay TLS chậm; cho phép retry thay vì lỗi sớm.
+    return OpenAI(api_key=api_key, timeout=60.0, max_retries=3)
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
@@ -186,15 +227,20 @@ def get_collection():
     return client.get_collection(COLLECTION_NAME)
 
 
-def collection_exists_and_has_data() -> bool:
-    """Return True when the target collection exists and contains vectors."""
+def collection_is_ready() -> bool:
+    """Kiểm tra collection có dữ liệu đúng model và số chiều hiện tại."""
     from chromadb.errors import NotFoundError
 
     client = get_chroma_client()
 
     try:
         collection = client.get_collection(COLLECTION_NAME)
-        return collection.count() > 0
+        metadata = collection.metadata or {}
+        return (
+            collection.count() > 0
+            and metadata.get("embedding_model") == EMBEDDING_MODEL
+            and metadata.get("embedding_dim") == EMBEDDING_DIM
+        )
     except NotFoundError:
         return False
 
@@ -218,7 +264,11 @@ def index_to_vectorstore(chunks: list[dict]):
 
     collection = client.create_collection(
         name=COLLECTION_NAME,
-        metadata={"hnsw:space": "cosine"},
+        metadata={
+            "hnsw:space": "cosine",
+            "embedding_model": EMBEDDING_MODEL,
+            "embedding_dim": EMBEDDING_DIM,
+        },
     )
 
     collection.add(
@@ -250,7 +300,7 @@ def run_pipeline(force_reindex: bool = False) -> None:
     print(f"  Chroma path: {CHROMA_DIR}")
     print("=" * 58)
 
-    if not force_reindex and collection_exists_and_has_data():
+    if not force_reindex and collection_is_ready():
         collection = get_collection()
         print("ChromaDB đã có dữ liệu.")
         print(f"Hiện có {collection.count()} chunks.")
