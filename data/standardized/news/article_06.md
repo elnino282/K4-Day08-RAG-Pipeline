@@ -19,6 +19,7 @@ This document lets the RAG assistant answer questions such as "Aatrox giá bao n
 | Jhin | 5 | Dark Star, Eradicator, Sniper | late-game AD backline carry | TFTactics Jhin page, OP.GG Jhin page |
 | Shen | 5 | Bulwark, Timebreaker, Bastion | legendary frontline utility bruiser | TFTactics Shen page, OP.GG Shen page |
 | Bard | 5 | Meeple, Conduit | legendary AP carry / utility caster | TFTactics Bard page |
+| Xayah | 4 | Stargazer / Sniper-related comps | ranged AD carry | TFTactics Xayah page, OP.GG Xayah page, MetaTFT Xayah page |
 | Viktor | 5 | Psionic / Conduit-related comps | legendary utility AP unit | OP.GG comps and champion trend pages |
 | Ornn | 4 | Space Groove-related comps | frontline tank / utility holder | TFTactics and OP.GG comp pages |
 | Miss Fortune | 4 | Gun Goddess-related comps | ranged AD or spell damage carry | TFTactics and OP.GG comp pages |
@@ -29,6 +30,7 @@ This document lets the RAG assistant answer questions such as "Aatrox giá bao n
 Example answers:
 - "Aatrox là tướng 1 vàng trong Set 17. Trong data này Aatrox được dùng như frontline bruiser hoặc reroll tank-carry."
 - "Jhin là tướng 5 vàng, thường là carry vật lý tuyến sau."
+- "Xayah là tướng 4 vàng, thường là carry vật lý tuyến sau trong các biến thể Stargazer/Sniper."
 - "Bard là tướng 5 vàng, thường dùng đồ AP/caster như Găng Bảo Thạch, Mũ Phù Thủy Rabadon và Ngọn Giáo Shojin."
 
 If a champion is not present in this table, answer that the current dataset cannot verify the cost and ask for a source or a newer champion database.

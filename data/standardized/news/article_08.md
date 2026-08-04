@@ -18,6 +18,7 @@ This guide lets the assistant answer "đồ này có tác dụng gì?", "Vô C�
 | Infinity Edge | Vô Cực Kiếm | increases critical strike damage / physical burst value | AD carry, Sniper, backline damage dealer |
 | Deathblade | Kiếm Tử Thần | adds strong attack-damage scaling | AD carry that scales with attack damage |
 | Giant Slayer | Diệt Khổng Lồ | improves damage into high-health targets | carry versus tanks/bruisers |
+| Kraken's Fury | Cuồng Nộ Kraken | rewards repeated attacks and sustained physical damage | fast AD carry such as Xayah |
 | Last Whisper | Cung Xanh | helps physical damage teams deal with armor | AD carry when enemies stack armor |
 | Red Buff | Bùa Đỏ | applies burn / anti-heal style pressure | fast attackers, splash damage, anti-heal need |
 | Jeweled Gauntlet | Găng Bảo Thạch | lets spell damage crit and increases AP burst | AP carry / magic caster |

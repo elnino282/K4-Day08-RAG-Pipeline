@@ -19,9 +19,12 @@ This matrix is designed for direct questions like "Aatrox lên đồ nào?", "Jh
 | Jhin | Infinity Edge, Deathblade, Giant Slayer | Vô Cực Kiếm, Kiếm Tử Thần, Diệt Khổng Lồ | Last Whisper, Red Buff, Striker's Flail | Jhin is a 5-cost AD backline carry, so damage, critical scaling, and anti-tank damage are prioritized. |
 | Shen | Thief's Gloves, Bloodthirster, Hand of Justice | Găng Đạo Tặc, Huyết Kiếm, Bàn Tay Công Lý | Guinsoo's Rageblade, Titan's Resolve, defensive items | Shen is a 5-cost frontline utility bruiser. Flexible or sustain items are good when he must survive and keep casting. |
 | Bard | Jeweled Gauntlet, Rabadon's Deathcap, Spear of Shojin | Găng Bảo Thạch, Mũ Phù Thủy Rabadon, Ngọn Giáo Shojin | Void Staff, Giant Slayer, Blue Buff | Bard is a 5-cost AP caster, so spell damage and mana generation are valuable. |
+| Xayah | Kraken's Fury, Red Buff, Last Whisper | Cuồng Nộ Kraken, Bùa Đỏ, Cung Xanh | Guinsoo's Rageblade, Battle Bunny Crossbow, Infinity Edge | Xayah is a 4-cost ranged AD carry, so attack-speed scaling, anti-heal/burn pressure, and armor handling are prioritized. |
 | Miss Fortune | Infinity Edge, Giant Slayer, Spear of Shojin | Vô Cực Kiếm, Diệt Khổng Lồ, Ngọn Giáo Shojin | Red Buff, Last Whisper, Deathblade | Miss Fortune can use carry items that amplify ranged damage and casting uptime. |
 | Ornn | Gargoyle Stoneplate, Warmog's Armor, Dragon's Claw | Thú Tượng Thạch Giáp, Giáp Máu Warmog, Vuốt Rồng | Bramble Vest, Steadfast Heart, Redemption | Ornn is usually a frontline tank or utility holder, so durability is preferred. |
 
 Example answer for Aatrox: Aatrox nên lên Thú Tượng Thạch Giáp + Giáp Gai + Vuốt Rồng nếu cần tanker. Có thể thay bằng Trái Tim Kiên Định, Móng Vuốt Sterak hoặc Giáp Máu Warmog nếu thiếu mảnh hoặc cần thêm máu/sinh tồn.
 
 Example answer for Jhin: Jhin nên lên Vô Cực Kiếm + Kiếm Tử Thần + Diệt Khổng Lồ. Nếu lobby nhiều giáp, cân nhắc Cung Xanh.
+
+Example answer for Xayah: Xayah nên lên Cuồng Nộ Kraken + Bùa Đỏ + Cung Xanh. Nếu cần đánh lâu dài có thể thay bằng Cuồng Đao Guinsoo; nếu có tạo tác phù hợp có thể cân nhắc Battle Bunny Crossbow.
