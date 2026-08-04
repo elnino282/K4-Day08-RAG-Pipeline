@@ -1,0 +1,27 @@
+---
+title: "TFT champion recommended item matrix"
+game: "Teamfight Tactics"
+customer_role: "player"
+category: "champion-item-matrix"
+patch_context: "Set 17 patch 17.8 practical item recommendation snapshot"
+source_url: "https://www.metatft.com/units"
+retrieved_at: "2026-08-04"
+document_version: "not-stated"
+source_file: "article_07.json"
+---
+# TFT champion recommended item matrix
+
+This matrix is designed for direct questions like "Aatrox lên đồ nào?", "Jhin nên cầm gì?", "Bard build AP ra sao?", and "Shen dùng đồ gì?". It gives core items, Vietnamese aliases, alternatives, and short reasoning.
+
+| Champion | Core items | Tên Việt | Alternatives | Why |
+|---|---|---|---|---|
+| Aatrox | Gargoyle Stoneplate, Bramble Vest, Dragon's Claw | Thú Tượng Thạch Giáp, Giáp Gai, Vuốt Rồng | Steadfast Heart, Sterak's Gage, Warmog's Armor, Spirit Visage | Aatrox is a 1-cost frontline bruiser, so tank durability and sustain help him survive while dealing physical damage. |
+| Jhin | Infinity Edge, Deathblade, Giant Slayer | Vô Cực Kiếm, Kiếm Tử Thần, Diệt Khổng Lồ | Last Whisper, Red Buff, Striker's Flail | Jhin is a 5-cost AD backline carry, so damage, critical scaling, and anti-tank damage are prioritized. |
+| Shen | Thief's Gloves, Bloodthirster, Hand of Justice | Găng Đạo Tặc, Huyết Kiếm, Bàn Tay Công Lý | Guinsoo's Rageblade, Titan's Resolve, defensive items | Shen is a 5-cost frontline utility bruiser. Flexible or sustain items are good when he must survive and keep casting. |
+| Bard | Jeweled Gauntlet, Rabadon's Deathcap, Spear of Shojin | Găng Bảo Thạch, Mũ Phù Thủy Rabadon, Ngọn Giáo Shojin | Void Staff, Giant Slayer, Blue Buff | Bard is a 5-cost AP caster, so spell damage and mana generation are valuable. |
+| Miss Fortune | Infinity Edge, Giant Slayer, Spear of Shojin | Vô Cực Kiếm, Diệt Khổng Lồ, Ngọn Giáo Shojin | Red Buff, Last Whisper, Deathblade | Miss Fortune can use carry items that amplify ranged damage and casting uptime. |
+| Ornn | Gargoyle Stoneplate, Warmog's Armor, Dragon's Claw | Thú Tượng Thạch Giáp, Giáp Máu Warmog, Vuốt Rồng | Bramble Vest, Steadfast Heart, Redemption | Ornn is usually a frontline tank or utility holder, so durability is preferred. |
+
+Example answer for Aatrox: Aatrox nên lên Thú Tượng Thạch Giáp + Giáp Gai + Vuốt Rồng nếu cần tanker. Có thể thay bằng Trái Tim Kiên Định, Móng Vuốt Sterak hoặc Giáp Máu Warmog nếu thiếu mảnh hoặc cần thêm máu/sinh tồn.
+
+Example answer for Jhin: Jhin nên lên Vô Cực Kiếm + Kiếm Tử Thần + Diệt Khổng Lồ. Nếu lobby nhiều giáp, cân nhắc Cung Xanh.

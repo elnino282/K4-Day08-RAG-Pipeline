@@ -1,0 +1,10 @@
+{
+  "url": "https://op.gg/tft/meta-trends/item",
+  "title": "TFT artifact item guide",
+  "date_crawled": "2026-08-04",
+  "game": "Teamfight Tactics",
+  "customer_role": "player",
+  "category": "artifact-guide",
+  "patch_context": "Set 17 artifact and special item usage snapshot",
+  "content_markdown": "# TFT artifact item guide\n\nThis guide answers \"đồ tạo tác nào?\", \"artifact nào hợp carry?\", and \"đồ tạo tác nào hợp Jhin/Bard/Aatrox?\". Artifact effects vary by patch, so this guide gives practical role-based matching rather than exact numerical values.\n\n| Artifact | Tên Việt gợi ý | Tác dụng / use case | Hợp với |\n|---|---|---|---|\n| Sniper's Focus | Tiêu Điểm Xạ Thủ | rewards long range and backline positioning | Jhin, ranged carry, Sniper |\n| Fishbones | Xương Cá | increases range / changes targeting pattern, useful for carries that can abuse extra reach | ranged AD carry |\n| Gold Collector | Thu Thập Vàng | execute-style pressure and economy upside on kills | AD carry with reliable damage |\n| Death's Defiance | Vũ Điệu Tử Thần | melee survivability and delayed-damage style durability | bruiser, melee carry, Aatrox-type unit |\n| Infinity Force | Tam Hợp / Infinity Force | broad stat package, flexible artifact | almost any carry or bruiser |\n| Lich Bane | Kiếm Tai Ương | spell-to-attack burst pattern | AP caster that attacks after casting |\n| Rapid Firecannon | Đại Bác Liên Thanh | range and attack uptime | ranged carry or melee unit needing safety |\n| Zhonya's Paradox | Nghịch Lý Zhonya | defensive stasis/survival window for a carry | AP carry, fragile carry |\n| Mogul's Mail | Áo Choàng Đại Gia | tank item with economy/stacking fantasy | frontline tank |\n| Hullcrusher | Máy Nghiền / Hullcrusher | bruiser durability and damage profile | isolated frontline or melee carry |\n\nExample answer: Nếu hỏi \"đồ tạo tác nào hợp Jhin\", ưu tiên Sniper's Focus, Fishbones, Gold Collector hoặc Infinity Force vì Jhin là ranged AD carry. Nếu hỏi \"Aatrox hợp tạo tác nào\", Death's Defiance, Hullcrusher hoặc Infinity Force hợp hơn vì Aatrox là melee bruiser/frontline."
+}
