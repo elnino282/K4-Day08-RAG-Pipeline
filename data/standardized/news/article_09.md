@@ -1,29 +1,73 @@
 ---
-title: "TFT artifact item guide"
+title: "TFT Set 17 artifact item catalog from CommunityDragon"
 game: "Teamfight Tactics"
 customer_role: "player"
 category: "artifact-guide"
-patch_context: "Set 17 artifact and special item usage snapshot"
-source_url: "https://op.gg/tft/meta-trends/item"
+patch_context: "Set 17 CommunityDragon artifact subset from item references"
+source_url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
-document_version: "not-stated"
+document_version: "CommunityDragon latest snapshot"
 source_file: "article_09.json"
 ---
-# TFT artifact item guide
+# TFT Set 17 artifact item catalog from CommunityDragon
 
-This guide answers "đồ tạo tác nào?", "artifact nào hợp carry?", and "đồ tạo tác nào hợp Jhin/Bard/Aatrox?". Artifact effects vary by patch, so this guide gives practical role-based matching rather than exact numerical values.
+This artifact catalog is derived from Set 17 item references in CommunityDragon. Total artifact rows: 54. It answers questions such as "đồ tạo tác nào", "artifact này tác dụng gì", and "artifact nào hợp carry/tanker".
 
-| Artifact | Tên Việt gợi ý | Tác dụng / use case | Hợp với |
-|---|---|---|---|
-| Sniper's Focus | Tiêu Điểm Xạ Thủ | rewards long range and backline positioning | Jhin, ranged carry, Sniper |
-| Fishbones | Xương Cá | increases range / changes targeting pattern, useful for carries that can abuse extra reach | ranged AD carry |
-| Gold Collector | Thu Thập Vàng | execute-style pressure and economy upside on kills | AD carry with reliable damage |
-| Death's Defiance | Vũ Điệu Tử Thần | melee survivability and delayed-damage style durability | bruiser, melee carry, Aatrox-type unit |
-| Infinity Force | Tam Hợp / Infinity Force | broad stat package, flexible artifact | almost any carry or bruiser |
-| Lich Bane | Kiếm Tai Ương | spell-to-attack burst pattern | AP caster that attacks after casting |
-| Rapid Firecannon | Đại Bác Liên Thanh | range and attack uptime | ranged carry or melee unit needing safety |
-| Zhonya's Paradox | Nghịch Lý Zhonya | defensive stasis/survival window for a carry | AP carry, fragile carry |
-| Mogul's Mail | Áo Choàng Đại Gia | tank item with economy/stacking fantasy | frontline tank |
-| Hullcrusher | Máy Nghiền / Hullcrusher | bruiser durability and damage profile | isolated frontline or melee carry |
+| Artifact | Tên Việt gợi ý | API name | Effect / use case | Practical fit |
+|---|---|---|---|---|
+| Aegis of Dawn |  | TFT_Item_Artifact_AegisOfDawn | Every giá trị theo patch seconds, steal giá trị theo patch Armor from enemies within 1-hex and heal giá trị theo patch% of the holder's Armor. If Aegis of Dusk is also equipped, trigger this item's effect every giá trị theo patch seconds instead. Healing incre | frontline tank / bruiser |
+| Aegis of Dusk |  | TFT_Item_Artifact_AegisOfDusk | Every giá trị theo patch seconds, steal giá trị theo patch Magic Resist from enemies within 1 hex and deal giá trị theo patch% of the holder's Magic Resist as magic damage. If Aegis of Dawn is also equipped, trigger this item's effect every giá trị theo patch | AD carry / ranged carry / fighter depending on effect |
+| Ahri's Aura |  | TFT17_Item_Artifact_AhriArtifact | The holder is orbited by 3 foxfires. Each one deals giá trị theo patch () magic damage and the orbit expands to hit the holder's current target. For every giá trị theo patch Mana the holder spends, foxfires travel giá trị theo patch% faster for the rest of com | AD carry / ranged carry / fighter depending on effect |
+| Blacksmith's Gloves |  | TFT9_Item_OrnnPrototypeForge | Each round: Equip 2 random Ornn Artifacts. [Consumes 3 item slots.] giá trị theo patch | flexible artifact; match to holder role and effect text |
+| Blighting Jewel |  | TFT_Item_Artifact_BlightingJewel | Dealing magic damage reduces the target's Magic Resist by giá trị theo patch. If their Magic Resist is 0, grant the holder giá trị theo patch Mana instead. Ability damage can only trigger on each enemy once every giá trị theo patch seconds. | AD carry / ranged carry / fighter depending on effect |
+| Cappa Juice |  | TFT_Item_Artifact_CappaJuice | The holder dons a Hat on each takedown. The holder gains giá trị theo patch% Attack Damage and Ability Power per Hat. On death lose giá trị theo patch% of all Hats. (Hats: giá trị theo patch) | AD carry / ranged carry / fighter depending on effect |
+| Corrupt Vampiric Scepter |  | TFT_Item_Artifact_CursedVampiricScepter | Attacks deal an additional giá trị theo patch% Attack Damage as physical damage and heal the holder for the damage dealt. The holder cannot cast their Ability or gain Mana. | AD carry / ranged carry / fighter depending on effect |
+| Dawncore |  | TFT_Item_Artifact_Dawncore | Reduce the holder's max Mana by giá trị theo patch. Subsequent spellcasts reduce max Mana by giá trị theo patch%, to a minimum of giá trị theo patch. | AP carry / caster |
+| Death's Defiance |  | TFT4_Item_OrnnDeathsDefiance | giá trị theo patch% of the damage the holder receives is instead dealt over giá trị theo patch seconds as non-lethal damage. [Unique - only 1 per champion] | AD carry / ranged carry / fighter depending on effect |
+| Deathfire Grasp |  | TFT9_Item_OrnnDeathfireGrasp | Combat start: Blast the current target for giá trị theo patch% of their max Health as magic damage. Repeat this every giá trị theo patch seconds. | AD carry / ranged carry / fighter depending on effect |
+| Eternal Pact |  | TFT_Item_Artifact_EternalPact | Combat start: Form a pact with the highest Health allied champion, if they die, gain giá trị theo patch Mana regen and giá trị theo patch% Ability Power. When the ally uses their ability, gain giá trị theo patch Mana. Every giá trị theo patch seconds, shield y | AP carry / caster |
+| Eternal Winter |  | TFT4_Item_OrnnEternalWinter | Enemies who damage the holder are giá trị theo patch% Chilled for giá trị theo patch seconds. After giá trị theo patch Chills from this item, the attacker is Stunned instead (Cooldown: giá trị theo patch seconds). [Unique - only 1 per champion] Chill : reduce | AD carry / ranged carry / fighter depending on effect |
+| Evelynn's Instinct |  | TFT17_Item_Artifact_EvelynnArtifact | When switching targets, blink to the next target. Attacks and Abilities execute the holder's target below giá trị theo patch% of their Health. Kills grant the holder giá trị theo patch% Attack Speed decaying over giá trị theo patch seconds. | AD carry / ranged carry / fighter depending on effect |
+| Fishbones |  | TFT_Item_Artifact_Fishbones | The holder's attacks target random enemies. | AD carry / ranged carry / fighter depending on effect |
+| Flickerblades |  | TFT_Item_Artifact_NavoriFlickerblades | Attacks grant giá trị theo patch% stacking Attack Speed. Every giá trị theo patch attacks also grant giá trị theo patch% Attack Damage and giá trị theo patch% Ability Power. | AD carry / ranged carry / fighter depending on effect |
+| Forbidden Idol |  | TFT_Item_Artifact_ForbiddenIdol | Shields have giá trị theo patch% of their value converted to max Health instead. | frontline tank / bruiser |
+| Gold Collector |  | TFT4_Item_OrnnTheCollector | Attacks and Abilities execute enemies below giá trị theo patch% of their maximum Health. Executions have a giá trị theo patch% chance to drop 1 gold. Gold Collected: giá trị theo patchg [Unique - only 1 per champion] | AD carry / ranged carry / fighter depending on effect |
+| Hellfire Hatchet |  | TFT_Item_Artifact_HellfireHatchet | Attacks deal giá trị theo patch% of the holder's max Health as bonus physical damage. For every giá trị theo patch% missing Health, gain giá trị theo patch% Attack Speed. | AD carry / ranged carry / fighter depending on effect |
+| Hullcrusher |  | TFT9_Item_OrnnHullbreaker | Combat Start: If there are no adjacent allies, gain giá trị theo patch Health, giá trị theo patch% Attack Damage, and giá trị theo patch% Ability Power. | AD carry / ranged carry / fighter depending on effect |
+| Infinity Force |  | TFT4_Item_OrnnInfinityForce | Tons of EVERYTHING! | flexible artifact; match to holder role and effect text |
+| Innervating Locket |  | TFT_Item_Artifact_InnervatingLocket | The holder gains giá trị theo patch% of their total Mana whenever they're hit by an attack. Each cast restores giá trị theo patch% of the holder's max Health over giá trị theo patch seconds. | AD carry / ranged carry / fighter depending on effect |
+| Kayle's Radiant Exaltation |  | TFT17_Item_Artifact_KayleArtifact_Radiant | Behold, the righteous flame! | flexible artifact; match to holder role and effect text |
+| Lesser Mirrored Persona |  | TFT_Item_Artifact_LesserMirroredPersona | Share giá trị theo patch% of the holder's bonus Attack Damage, Ability Power, Attack Speed, Armor, Magic Resist, and Health with other Mirrored Persona holders. Can't be Reforged Unique: one per champion | AD carry / ranged carry / fighter depending on effect |
+| Lich Bane |  | TFT_Item_Artifact_LichBane | The holder's first attack after each Ability cast deals giá trị theo patch bonus magic damage. Damage increases based on Stage. | AD carry / ranged carry / fighter depending on effect |
+| Lightshield Crest |  | TFT_Item_Artifact_LightshieldCrest | Every giá trị theo patch seconds, Shields the lowest percent Health ally for giá trị theo patch% of the holder's combined Armor and Magic Resist for giá trị theo patch seconds. On death grants this shield to all allies. | AP carry / caster |
+| Luden's Tempest |  | TFT_Item_Artifact_LudensTempest | giá trị theo patch% of overkill damage plus giá trị theo patch is dealt as magic damage to the two enemies nearest to the target. | AD carry / ranged carry / fighter depending on effect |
+| Manazane |  | TFT4_Item_OrnnMuramana | After casting the first time in combat, gain giá trị theo patch Mana over giá trị theo patch seconds. [Unique - only 1 per champion] | AP carry / caster |
+| Mending Echoes |  | TFT_Item_Artifact_MendingEchoes | Increase healing on the holder by giá trị theo patch%. When the holder gives or receives a heal, grant giá trị theo patch% of the heals value to the lowest health ally as well. | frontline tank / bruiser |
+| Mirrored Persona |  | TFT_Item_Artifact_MirroredPersona | Every giá trị theo patch player combats gain a lesser copy of Mirrored Persona (giá trị theo patch/giá trị theo patch). Share giá trị theo patch% of the holder's bonus Attack Damage, Ability Power, Attack Speed, Armor, Magic Resist, and Health with other Mirro | AD carry / ranged carry / fighter depending on effect |
+| Mittens |  | TFT_Item_Artifact_Mittens | Shrinks the holder, granting them increased movement speed and immunity to Slow , Burn , and Wound . {{TFT_Keyword_Chill}} {{TFT_Keyword_Burn}} {{TFT_Keyword_Wound}} | flexible artifact; match to holder role and effect text |
+| Obsidian Cleaver |  | TFT4_Item_OrnnObsidianCleaver | Damage dealt giá trị theo patch% Shreds and giá trị theo patch% Sunders enemies for giá trị theo patch seconds. Your team gains giá trị theo patch% Attack Damage and giá trị theo patch Ability Power. ​​[Support item] [Unique - only 1 per champion] Shred : Redu | AD carry / ranged carry / fighter depending on effect |
+| Prowler's Claw |  | TFT_Item_Artifact_ProwlersClaw | After killing a target, shed negative effects and dash to the farthest target within giá trị theo patch hexes. The next 2 critical attacks deal giá trị theo patch% bonus Critical Strike Damage. | AD carry / ranged carry / fighter depending on effect |
+| Randuin's Omen |  | TFT4_Item_OrnnRanduinsSanctum | Combat start: Grant giá trị theo patch Armor and giá trị theo patch Magic Resistance to the holder and adjacent allies. ​​ [Support item] | AP carry / caster |
+| Rapid Firecannon |  | TFT_Item_Artifact_RapidFirecannon | Gain +1 Attack Range, increased by 1 whenever the holder kills an enemy. | AD carry / ranged carry / fighter depending on effect |
+| Seeker's Armguard |  | TFT_Item_Artifact_SeekersArmguard | Takedowns increase the holder's Armor, Magic Resist, and Ability Power by giá trị theo patch. | AP carry / caster |
+| Shadow Puppet |  | TFT_Item_Artifact_ShadowPuppet | Spawn a clone that copies the holder's items. The clone has giá trị theo patch% max Health and deals giá trị theo patch% damage. [Unique - only 1 per champion] | AD carry / ranged carry / fighter depending on effect |
+| Silvermere Dawn |  | TFT_Item_Artifact_SilvermereDawn | Grants immunity to Stuns and the holder's attacks Stun the target for giá trị theo patch seconds. The holder's Attack Speed is locked at giá trị theo patch. | AD carry / ranged carry / fighter depending on effect |
+| Sniper's Focus |  | TFT9_Item_OrnnHorizonFocus | Gain giá trị theo patch% Damage Amp against targets giá trị theo patch or more hexes away. | AD carry / ranged carry / fighter depending on effect |
+| Soraka's Miracle |  | TFT17_Item_Artifact_SorakaArtifact | The first giá trị theo patch times the holder drops below giá trị theo patch% Health, a Miracle occurs, healing them for giá trị theo patch% of their max Health. If the holder survives player combat, gain giá trị theo patch player Health for each Miracle this | frontline tank / bruiser |
+| Spectral Cutlass |  | TFT_Item_Artifact_SpectralCutlass | Combat start: Teleport the holder to the mirrored hex on the enemy's side of the board. After giá trị theo patch seconds, the holder returns to their original location. | flexible artifact; match to holder role and effect text |
+| Statikk Shiv | Dao Điện Statikk | TFT_Item_Artifact_StatikkShiv | Every 3rd attack deals giá trị theo patch + giá trị theo patch% of the holder's Ability Power as additional magic damage to 4 enemies. | AD carry / ranged carry / fighter depending on effect |
+| Suspicious Trench Coat |  | TFT_Item_Artifact_SuspiciousTrenchCoat | Once per combat at giá trị theo patch% Health, the holder splits into 3 copies of themself each with giá trị theo patch% of their max Health. [Unique - only 1 per champion] | frontline tank / bruiser |
+| Talisman Of Ascension |  | TFT_Item_Artifact_TalismanOfAscension | After giá trị theo patch seconds gain giá trị theo patch% max Health and giá trị theo patch% Damage Amp for the rest of combat. | AD carry / ranged carry / fighter depending on effect |
+| The Indomitable |  | TFT_Item_Artifact_TheIndomitable | The holder's Move Speed is drastically reduced. Gain giá trị theo patch% max Health, stun immunity, and pull the current target into melee range. | AD carry / ranged carry / fighter depending on effect |
+| Thresh's Lantern |  | TFT17_Item_Artifact_ThreshLantern | After giá trị theo patch seconds of combat, pull the leftmost benched unit onto the battlefield. While that unit lives, giá trị theo patch% of all damage the holder would take is redirected to them. Traits of champions flung onto the board do not become active | AD carry / ranged carry / fighter depending on effect |
+| Titanic Hydra |  | TFT_Item_Artifact_TitanicHydra | Attacks deal giá trị theo patch% of the holder's max Health plus giá trị theo patch% of their Attack Damage as bonus physical damage to the target and adjacent enemies. | AD carry / ranged carry / fighter depending on effect |
+| Trickster's Glass |  | TFT9_Item_OrnnTrickstersGlass | Summon a clone with giá trị theo patch% base Health and +giá trị theo patch% max Mana. You cannot equip items to the clone. The clone benefits from active traits [Unique - only 1 per champion] | AP carry / caster |
+| Unending Despair |  | TFT_Item_Artifact_UnendingDespair | Whenever a Shield on the holder breaks, giá trị theo patch% of that Shield's initial value is dealt to the nearest enemy as magic damage. | AD carry / ranged carry / fighter depending on effect |
+| Varus's Obsession |  | TFT17_Item_Artifact_VarusArtifact | Combat Start: Your strongest Tank becomes the Soulmate. For each second they are alive, the holder gains giá trị theo patch% stacking Attack Damage and Ability Power. The Soulmate heals for giá trị theo patch% of damage the holder deals. | AD carry / ranged carry / fighter depending on effect |
+| Void Gauntlet |  | TFT_Item_Artifact_VoidGauntlet | Combat start: Store giá trị theo patch% max Health and giá trị theo patch% more every second. On death, unleash the stored Health as magic damage split between enemies within giá trị theo patch-hexes. [Unique - only 1 per champion] | AD carry / ranged carry / fighter depending on effect |
+| Wit's End |  | TFT_Item_Artifact_WitsEnd | Attacks deal giá trị theo patch bonus magic damage. Heals the holder for giá trị theo patch% of all magic damage dealt. Damage increases based on Stage. | AD carry / ranged carry / fighter depending on effect |
+| Yasuo's Bladework |  | TFT17_Item_Artifact_YasuoArtifact | Every giá trị theo patch seconds, your next attack is a double attack. | AD carry / ranged carry / fighter depending on effect |
+| Zeke's Bleak Herald |  | TFT17_Item_Artifact_ZekesHeraldShadow | When combat begins, the holder reduces the Attack Speed of all allies within giá trị theo patch hexes in the same row by giá trị theo patch%. The holder then gains giá trị theo patch% Attack Speed for each affected ally. | AD carry / ranged carry / fighter depending on effect |
+| Zhonya's Paradox |  | TFT4_Item_OrnnZhonyasParadox | Once per combat at giá trị theo patch% Health, become invulnerable and untargetable for giá trị theo patch seconds. [Unique - only 1 per champion] | frontline tank / bruiser |
 
-Example answer: Nếu hỏi "đồ tạo tác nào hợp Jhin", ưu tiên Sniper's Focus, Fishbones, Gold Collector hoặc Infinity Force vì Jhin là ranged AD carry. Nếu hỏi "Aatrox hợp tạo tác nào", Death's Defiance, Hullcrusher hoặc Infinity Force hợp hơn vì Aatrox là melee bruiser/frontline.
+Answering rule: artifact recommendations should match the effect to the champion role. For example, ranged AD carries prefer range/damage/attack artifacts, AP casters prefer spell or mana artifacts, and tanks prefer durability artifacts.
