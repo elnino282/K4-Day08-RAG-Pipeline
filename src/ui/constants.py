@@ -1,14 +1,14 @@
 """All user-facing copy and UI defaults live here."""
 
-APP_TITLE = "E-commerce Support RAG"
-APP_SUBTITLE = "Trợ lý tra cứu chính sách và hỗ trợ khách hàng"
-APP_ICON = "💬"
-INPUT_PLACEHOLDER = "Hỏi về chính sách, thanh toán, đổi trả hoặc hỗ trợ đơn hàng..."
-NEW_CONVERSATION_LABEL = "Cuộc trò chuyện mới"
-LOADING_TEXT = "Đang tìm kiếm tài liệu và tổng hợp câu trả lời..."
-EMPTY_TITLE = "Bạn muốn tìm hiểu điều gì?"
-EMPTY_DESCRIPTION = "Hỏi về chính sách e-commerce, thanh toán, đổi trả hoặc hỗ trợ đơn hàng."
-ERROR_TITLE = "Không thể hoàn tất câu trả lời"
+APP_TITLE = "Gaming Meta Guide"
+APP_SUBTITLE = "Trợ lý chiến thuật & phân tích meta trò chơi"
+APP_ICON = "⚔️"
+INPUT_PLACEHOLDER = "Hỏi về tướng, đội hình, bảng ngọc, patch meta..."
+NEW_CONVERSATION_LABEL = "Trận đấu mới"
+LOADING_TEXT = "Đang phân tích dữ liệu chiến thuật và tổng hợp meta..."
+EMPTY_TITLE = "Bạn cần tư vấn chiến thuật gì?"
+EMPTY_DESCRIPTION = "Hỏi về cách lên đồ, bảng ngọc, đội hình meta và phân tích patch mới nhất."
+ERROR_TITLE = "Không thể phân tích chiến thuật"
 ERROR_FALLBACK = "Đã có lỗi không xác định. Vui lòng thử lại."
 INVALID_RAG_RESPONSE = "RAG returned an invalid response."
 SOURCE_LABEL = "Nguồn tham khảo"
@@ -17,28 +17,28 @@ DEFAULT_TOP_K = 5
 
 PROMPT_CARDS = [
     {
-        "icon": "🔄",
-        "category": "Đổi trả & Hoàn tiền",
-        "title": "Thời hạn trả hàng/hoàn tiền",
-        "query": "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
+        "icon": "⚔️",
+        "category": "League of Legends",
+        "title": "Lên đồ & Bảng ngọc Aatrox",
+        "query": "Cách lên đồ và bảng ngọc tối ưu cho tướng Aatrox ở vị trí Đường Trên trong bản cập nhật mới nhất?",
     },
     {
-        "icon": "💳",
-        "category": "Thanh toán",
-        "title": "Phương thức thanh toán",
-        "query": "Những phương thức thanh toán nào được hỗ trợ?",
+        "icon": "🌊",
+        "category": "Genshin Impact",
+        "title": "Đội hình Neuvillette",
+        "query": "Đội hình phản ứng nguyên tố tốt nhất cho nhân vật Neuvillette trong Genshin Impact bao gồm những ai?",
     },
     {
-        "icon": "⚙️",
-        "category": "Hỗ trợ đơn hàng",
-        "title": "Thay đổi thanh toán",
-        "query": "Làm sao để thay đổi phương thức thanh toán đơn hàng?",
+        "icon": "🏆",
+        "category": "League of Legends",
+        "title": "Tướng Meta Đường Giữa",
+        "query": "Những tướng nào đang meta mạnh nhất ở vị trí Đường Giữa trong patch hiện tại?",
     },
     {
-        "icon": "🏪",
-        "category": "Quy định người bán",
-        "title": "Đăng bán sản phẩm",
-        "query": "Quy định đăng bán sản phẩm dành cho người bán là gì?",
+        "icon": "🎯",
+        "category": "Genshin Impact",
+        "title": "Build trang bị tối ưu",
+        "query": "Bộ trang bị và vũ khí tối ưu nhất cho nhân vật Hu Tao trong Genshin Impact là gì?",
     },
 ]
 

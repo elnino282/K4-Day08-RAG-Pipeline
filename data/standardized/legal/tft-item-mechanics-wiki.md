@@ -1,16 +1,12 @@
 ---
-title: "TFT Item Mechanics Wiki"
-game: "Teamfight Tactics"
+title: "TFT Item Mechanics Wiki Summary"
 customer_role: "player"
 category: "item-mechanics"
 source_url: "https://wiki.leagueoflegends.com/en-us/TFT:Item"
-source_type: "web-page-printed-to-pdf"
-print_method: "Chromium print to PDF from source URL"
 retrieved_at: "2026-08-04"
 document_version: "2026-08-04"
 source_file: "tft-item-mechanics-wiki.pdf"
 ---
-
 TFT Item Mechanics Wiki
 Item | Teamfight Tactics
 An item is a modular enhancement that grants bonuses and capabilities beyond what Champions and units have

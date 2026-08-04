@@ -1,12 +1,10 @@
 ---
 title: "TFT Set 17 complete champion roster from CommunityDragon"
-game: "Teamfight Tactics"
 customer_role: "player"
 category: "champion-database"
-patch_context: "Set 17 CommunityDragon snapshot; playable champion roster cost 1-5"
 source_url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
-document_version: "CommunityDragon latest snapshot"
+document_version: "not-stated"
 source_file: "article_01.json"
 ---
 # TFT Set 17 complete champion roster from CommunityDragon

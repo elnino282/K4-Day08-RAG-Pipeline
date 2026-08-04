@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from html import escape
+
 import streamlit as st
 
 from src.ui.constants import SOURCE_LABEL
@@ -22,23 +24,24 @@ def render_sources(sources: list[dict]) -> None:
     if not sources:
         return
     with st.expander(f"📚 {SOURCE_LABEL} ({len(sources)})", expanded=False):
-        for index, source in enumerate(sources):
+        for index, source in enumerate(sources, start=1):
             score = source.get("score")
             badge_html = _format_badge(score)
-            name = source.get("name", "Tài liệu không tên")
-            doc_type = source.get("type", "Chính sách")
+            citation_index = source.get("citation_index") or index
+            name = escape(str(source.get("name", "Tài liệu không tên")))
+            doc_type = escape(str(source.get("type", "Chính sách")))
             content = source.get("content", "").strip()
 
             st.markdown(
                 f'<div class="source-card">'
                 f'  <div class="source-header">'
-                f'    <strong class="source-name">📄 {name}</strong>'
+                f'    <strong class="source-name"><span class="citation-number">[{citation_index}]</span> 📄 {name}</strong>'
                 f'    <div class="source-meta"><span class="source-type">{doc_type}</span>{badge_html}</div>'
                 f'  </div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
             if content:
-                snippet = content[:300] + ("…" if len(content) > 300 else "")
+                snippet = escape(content[:300] + ("…" if len(content) > 300 else ""))
                 st.markdown(f'<blockquote class="source-snippet">{snippet}</blockquote>', unsafe_allow_html=True)
 

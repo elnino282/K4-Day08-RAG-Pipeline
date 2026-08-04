@@ -1,16 +1,12 @@
 ---
-title: "Riot TFT API and Data Dragon Documentation"
-game: "Teamfight Tactics"
+title: "Riot TFT Data and App Policy Summary"
 customer_role: "developer"
 category: "official-data-policy"
 source_url: "https://developer.riotgames.com/docs/tft"
-source_type: "web-page-printed-to-pdf"
-print_method: "Chromium print to PDF from source URL"
 retrieved_at: "2026-08-04"
 document_version: "2026-08-04"
 source_file: "riot-tft-data-policy.pdf"
 ---
-
 Riot TFT API and Data Dragon Documentation
 
 TEAM FIG HT  TACT IC S

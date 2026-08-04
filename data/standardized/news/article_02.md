@@ -1,9 +1,7 @@
 ---
 title: "TFT champion item recommendation data"
-game: "Teamfight Tactics"
 customer_role: "player"
 category: "champion-item-matrix"
-patch_context: "Set 17 item recommendation examples plus role-based fallback rules"
 source_url: "https://www.metatft.com/units; https://op.gg/tft/meta-trends/champion; https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
 document_version: "not-stated"

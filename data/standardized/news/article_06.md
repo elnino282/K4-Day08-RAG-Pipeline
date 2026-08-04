@@ -1,12 +1,10 @@
 ---
 title: "TFT Set 17 meta team comps from TFTactics"
-game: "Teamfight Tactics"
 customer_role: "player"
 category: "team-comps"
-patch_context: "Set 17 Patch 17.8 TFTactics team comps crawl"
 source_url: "https://tftactics.gg/tierlist/team-comps/"
 retrieved_at: "2026-08-04"
-document_version: "Patch 17.8"
+document_version: "not-stated"
 source_file: "article_06.json"
 ---
 # TFT Set 17 meta team comps from TFTactics

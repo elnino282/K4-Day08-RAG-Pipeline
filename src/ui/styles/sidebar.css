@@ -1,16 +1,17 @@
-[data-testid="stSidebar"] { background:var(--sidebar); border-right:1px solid var(--line); }
-[data-testid="stSidebar"] > div:first-child { display:flex; flex-direction:column; min-height:100vh; padding:1.1rem .8rem; }
-.brand { display:flex; align-items:flex-start; gap:.65rem; margin:.25rem .25rem 1.3rem; color:var(--text); }
-.brand-mark { color:var(--accent); font-size:1.3rem; line-height:1; }
-.brand small { display:block; color:var(--muted); font-size:.73rem; font-weight:500; line-height:1.35; margin-top:.2rem; }
+[data-testid="stSidebar"] { background:var(--sidebar) !important; border-right:1px solid var(--line) !important; }
+[data-testid="stSidebar"] > div:first-child { padding-top:1.5rem; }
+.brand { display:flex; align-items:center; gap:.65rem; padding:.2rem 0 1.2rem; border-bottom:1px solid var(--line); margin-bottom:1rem; }
+.brand-mark { color:var(--accent); font-size:1.1rem; text-shadow: 0 0 10px rgba(200,155,60,0.6); }
+.brand strong { display:block; font-size:.95rem; font-weight:800; background: var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.brand small { color:var(--muted); font-size:.72rem; display:block; margin-top:.1rem; }
 
-[data-testid="stSidebar"] .stButton > button { background:transparent; border:0; border-radius:10px; box-shadow:none; color:var(--text); font-size:.83rem; justify-content:flex-start; min-height:2.2rem; padding:.4rem .55rem; text-align:left; }
-[data-testid="stSidebar"] .stButton > button:hover { background:var(--soft); color:var(--text); transform:none; }
+[data-testid="stSidebar"] .stButton > button { background:transparent; border-radius:8px; border:1px solid transparent; color:var(--muted); font-size:.84rem; font-weight:500; padding:.4rem .6rem; text-align:left; transition:all 0.18s; }
+[data-testid="stSidebar"] .stButton > button:hover { background:var(--soft); color:var(--text); border-color:var(--border-glow); transform:none; box-shadow:none; }
 
-[data-testid="stSidebar"] .stButton:first-of-type > button { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow); font-weight:600; margin-bottom:1rem; text-align:center; justify-content:center; }
+[data-testid="stSidebar"] button[kind="primary"], [data-testid="stSidebar"] .stButton:first-of-type > button { background: linear-gradient(135deg, #1a2035, #1e2840); border:1px solid var(--border-glow) !important; border-radius:10px !important; color:var(--accent) !important; font-weight:700 !important; padding:.55rem 1rem !important; margin-bottom:.6rem; transition: all 0.2s; }
+[data-testid="stSidebar"] button[kind="primary"]:hover { box-shadow: var(--glow); }
 
-.sidebar-spacer { flex-grow: 1; }
-.sidebar-footer { border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; line-height:1.45; padding:.85rem .3rem .2rem; margin-top: .8rem; }
-.sidebar-footer strong,.sidebar-footer span { display:block; }
-.sidebar-footer strong { color:var(--text); margin-bottom:.2rem; }
-
+.sidebar-spacer { flex:1; min-height:1rem; }
+.sidebar-footer { border-top:1px solid var(--line); color:var(--muted); font-size:.75rem; line-height:1.5; margin-top:1rem; padding-top:.75rem; }
+.sidebar-footer strong { color:var(--text); display:block; margin-bottom:.15rem; font-size:.78rem; }
+strong { color:var(--text); margin-bottom:.2rem; }

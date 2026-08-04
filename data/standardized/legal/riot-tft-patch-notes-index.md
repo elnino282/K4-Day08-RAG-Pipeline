@@ -1,16 +1,12 @@
 ---
 title: "Official TFT Patch Notes Index"
-game: "Teamfight Tactics"
 customer_role: "player"
 category: "patch-notes"
 source_url: "https://teamfighttactics.leagueoflegends.com/en-us/news/tags/patch-notes/"
-source_type: "web-page-printed-to-pdf"
-print_method: "Chromium print to PDF from source URL"
 retrieved_at: "2026-08-04"
 document_version: "2026-08-04"
 source_file: "riot-tft-patch-notes-index.pdf"
 ---
-
 Official TFT Patch Notes Index
 PATCH NOTES
 | GAME UPDATES                 | 7/29/2026 | GAME UPDATES                 | 7/15/2026 |
@@ -93,4 +89,3 @@ Personalization
 Analytics
 LEAGUE OF LEGENDS CLASSIC IS AVAILABLE NOW!
 LEARN MORE
-

@@ -16,7 +16,7 @@ def render_sidebar() -> None:
             start_new_conversation(st.session_state)
             st.rerun()
 
-        section_label("GẦN ĐÂY")
+        section_label("LỊCH SỬ TRẬN ĐẤU")
         conversations = st.session_state.get("conversations", [])
         for conversation in conversations:
             is_active = conversation["id"] == st.session_state.active_conversation
@@ -36,7 +36,7 @@ def render_sidebar() -> None:
 
         st.markdown('<div class="sidebar-spacer"></div>', unsafe_allow_html=True)
 
-        with st.expander("⚙️ Cấu hình Tra cứu", expanded=False):
+        with st.expander("⚙️ Cấu hình Tìm kiếm Meta", expanded=False):
             current_top_k = st.session_state.get("top_k", DEFAULT_TOP_K)
             new_top_k = st.slider("Số tài liệu tra cứu (Top-K)", min_value=1, max_value=10, value=current_top_k, step=1, disabled=st.session_state.is_loading)
             if new_top_k != current_top_k:
@@ -49,5 +49,5 @@ def render_sidebar() -> None:
                 st.toast("Đã làm sạch lịch sử trò chuyện!")
                 st.rerun()
 
-        st.markdown('<div class="sidebar-footer"><strong>Phiên làm việc</strong><span>Lịch sử chỉ được lưu trong phiên hiện tại.</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="sidebar-footer"><strong>Phiên làm việc</strong><span>Lịch sử trận đấu chỉ lưu trong phiên hiện tại.</span></div>', unsafe_allow_html=True)
 

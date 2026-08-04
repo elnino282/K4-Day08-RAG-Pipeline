@@ -1,12 +1,10 @@
 ---
 title: "TFT Set 17 artifact item catalog from CommunityDragon"
-game: "Teamfight Tactics"
 customer_role: "player"
 category: "artifact-guide"
-patch_context: "Set 17 CommunityDragon artifact subset from item references"
 source_url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
 retrieved_at: "2026-08-04"
-document_version: "CommunityDragon latest snapshot"
+document_version: "not-stated"
 source_file: "article_04.json"
 ---
 # TFT Set 17 artifact item catalog from CommunityDragon

@@ -1,8 +1,9 @@
-"""Normalize the existing RAG response for presentation without changing src/."""
+"""Chuẩn hóa kết quả pipeline Task 10 cho giao diện Streamlit."""
 
 from __future__ import annotations
 
 from collections.abc import Callable
+import re
 from typing import Any
 
 from src.ui.constants import DEFAULT_TOP_K, INVALID_RAG_RESPONSE
@@ -19,12 +20,34 @@ def _normalize_source(source: Any) -> dict | None:
     if not isinstance(source, dict):
         return None
     metadata = source.get("metadata") if isinstance(source.get("metadata"), dict) else {}
-    return {
-        "name": str(metadata.get("source") or source.get("name") or "Tài liệu không rõ tên"),
+    display_score = source.get("jina_score")
+    if display_score is None:
+        display_score = source.get("dense_score")
+    if display_score is None:
+        display_score = source.get("score")
+
+    raw_name = str(
+            metadata.get("title")
+            or metadata.get("source")
+            or source.get("name")
+            or "Tài liệu không rõ tên"
+        )
+    display_name = re.sub(
+        r"\s*\|\s*Shopee\s+Trung tâm trợ giúp\s*$",
+        "",
+        raw_name,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    normalized = {
+        "name": display_name or raw_name,
         "type": str(metadata.get("type") or source.get("type") or "Tài liệu"),
-        "score": _as_score(source.get("score")),
+        "score": _as_score(display_score),
         "content": str(source.get("content") or ""),
     }
+    if source.get("citation_index") is not None:
+        normalized["citation_index"] = source["citation_index"]
+    return normalized
 
 
 def run_rag_query(query: str, generate_fn: Callable[..., Any] | None = None, top_k: int = DEFAULT_TOP_K) -> dict:

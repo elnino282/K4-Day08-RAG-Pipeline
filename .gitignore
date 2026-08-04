@@ -1,30 +1,138 @@
+# =========================
 # Python
+# =========================
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+build/
+dist/
+pip-wheel-metadata/
+
+# Virtual Environment
 .venv/
 venv/
-*.egg-info/
+env/
 
-# Env (keys)
+# =========================
+# Environment
+# =========================
 .env
+.env.*
+!.env.example
 
-# Temp PDF conversion cache
+# =========================
+# Python Cache
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+
+# =========================
+# Hugging Face / Embedding Cache
+# =========================
+.hf-cache/
+.sentence-transformers/
+.cache/
+huggingface/
+
+# =========================
+# ChromaDB / Vector Database
+# =========================
+chroma_db/
+chroma_data/
+*.sqlite3
+*.sqlite
+*.db
+*.parquet
+
+# =========================
+# Crawl4AI
+# =========================
+.crawl4ai/
+
+# =========================
+# Temporary Files
+# =========================
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.lock
+
+# PDF processing cache
 data/_tmp_pdf/
 
-# Temp / cache
-.pytest_cache/
-.crawl4ai/
-*.tmp
+# PageIndex cache
 pageindex_doc_ids.json
-pageindex_pdfs/
+.pageindex_doc_ids.json
 
+pageindex_pdfs/
+.pageindex_pdfs/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
 # IDE
+# =========================
 .vscode/
 .idea/
 
+# =========================
 # OS
+# =========================
 .DS_Store
 Thumbs.db
 
-chroma_db/
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Optional (nếu sinh ra khi chạy)
+# =========================
+output/
+outputs/
+artifacts/
+tmp/
+temp/
+cache/
+
+# =========================
+# Task 8 — PageIndex temp files
+# =========================
+_pageindex_pdfs/
+.pageindex_doc_ids.json
+
+# =========================
+# macOS metadata
+# =========================
+.AppleDouble
+.LSOverride
+
+# =========================
+# Windows metadata
+# =========================
+Desktop.ini
+
+# =========================
+# Model checkpoints (nếu có)
+# =========================
+checkpoints/
+models/
+*.ckpt
+*.bin
+*.safetensors

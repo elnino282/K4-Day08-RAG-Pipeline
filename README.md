@@ -549,9 +549,49 @@ run_dashboard()
 
 ### Kiến Trúc Hệ Thống
 
+> Chi tiết đầy đủ (score lifecycle, fallback logic, provider chain, điểm giòn đã biết):
+> xem [ARCHITECTURE.md](ARCHITECTURE.md).
+
+```mermaid
+flowchart TB
+    subgraph OFFLINE["Offline — chạy khi dữ liệu thay đổi"]
+        T1["Task 1-2<br/>Thu thập + Crawl"] --> T3["Task 3<br/>MarkItDown"]
+        T3 --> T4["Task 4<br/>Chunk 800/100<br/>text-embedding-3-small"]
+        T3 --> T8U["Task 8<br/>Upload PageIndex"]
+    end
+
+    T4 --> CHROMA[("chroma_db/<br/>cosine, 1536-dim")]
+    T8U --> PICACHE[(".pageindex_doc_ids.json")]
+
+    subgraph ONLINE["Online — mỗi câu hỏi"]
+        UI["app.py<br/>Streamlit chat"] --> GEN["Task 10<br/>generate_with_citation"]
+        GEN --> PIPE["Task 9<br/>retrieve()"]
+        PIPE --> DENSE["Task 5<br/>Semantic (cosine)"]
+        PIPE --> SPARSE["Task 6<br/>BM25"]
+        DENSE --> GATE{"cosine top-1<br/>>= 0.39 ?"}
+        SPARSE --> RRF["Task 7<br/>RRF k=60"]
+        GATE -- có --> RRF
+        GATE -- không --> PI["Task 8<br/>PageIndex fallback"]
+        RRF --> CTX["reorder front+back[::-1]<br/>+ format context"]
+        PI --> CTX
+        CTX --> LLM["LLM<br/>OpenRouter -> OpenAI -> Gemini"]
+        LLM --> ANS["Câu trả lời có citation<br/>+ danh sách nguồn"]
+    end
+
+    CHROMA --> DENSE
+    CHROMA --> SPARSE
+    PICACHE --> PI
+    ANS --> UI
 ```
-[Vẽ diagram kiến trúc ở đây]
-```
+
+**Ghi chú kiến trúc:**
+
+- BM25 (Task 6) nạp corpus **từ ChromaDB**, không đọc lại `.md` — dense và sparse dùng chung
+  tập chunk và chung `chunk_id`, nhờ đó RRF ghép được kết quả 2 ranker.
+- Ngưỡng fallback so với **điểm cosine gốc** (`dense_results[0]["score"]`), tách khỏi điểm RRF
+  dùng để sắp xếp kết quả cuối.
+- UI hiển thị `dense_score` chứ không hiển thị `rrf_score` (điểm RRF đỉnh ≈ 0.016, hiển thị
+  dạng phần trăm sẽ sai).
 
 ---
 
