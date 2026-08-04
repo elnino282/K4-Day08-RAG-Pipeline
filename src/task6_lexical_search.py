@@ -15,10 +15,73 @@ BM25 hoạt động thế nào:
     - k1=1.5 (term saturation), b=0.75 (length normalization)
 """
 
-from pathlib import Path
+from __future__ import annotations
 
-# TODO: Load corpus từ data/standardized/ hoặc từ vector store
-CORPUS: list[dict] = []  # List of {'content': str, 'metadata': dict}
+import re
+from functools import lru_cache
+
+
+# ---------------------------------------------------------------------------
+# Corpus loading — lấy từ ChromaDB (tái sử dụng Task 4) để đồng nhất dữ liệu
+# ---------------------------------------------------------------------------
+
+def _load_corpus_from_chroma() -> list[dict]:
+    """Lấy toàn bộ documents + metadata từ ChromaDB collection."""
+    from .task4_chunking_indexing import get_collection
+
+    collection = get_collection()
+    total = collection.count()
+    if total == 0:
+        return []
+
+    # ChromaDB get() có giới hạn mặc định 10 — cần truyền limit rõ ràng
+    result = collection.get(
+        limit=total,
+        include=["documents", "metadatas"],
+    )
+
+    corpus: list[dict] = []
+    for doc, meta in zip(result["documents"], result["metadatas"]):
+        corpus.append({"content": doc, "metadata": meta})
+    return corpus
+
+
+# ---------------------------------------------------------------------------
+# Tokenizer đơn giản hỗ trợ tiếng Việt và tiếng Anh
+# ---------------------------------------------------------------------------
+
+def _tokenize(text: str) -> list[str]:
+    """
+    Tokenize text thành danh sách từ thường hóa.
+
+    Dùng regex split để giữ nguyên tiếng Việt có dấu,
+    loại bỏ ký tự đặc biệt và từ quá ngắn (1 ký tự).
+    """
+    text = text.lower()
+    # Giữ lại chữ cái (kể cả Unicode/tiếng Việt), số; tách bằng mọi ký tự khác
+    tokens = re.findall(r"[\w\u00C0-\u024F\u1EA0-\u1EF9]+", text)
+    return [t for t in tokens if len(t) > 1]
+
+
+# ---------------------------------------------------------------------------
+# BM25 index — build một lần, cache lại cho mọi lần gọi sau
+# ---------------------------------------------------------------------------
+
+@lru_cache(maxsize=1)
+def _get_bm25_index():
+    """
+    Trả về tuple (bm25_model, corpus) đã được cache.
+
+    lru_cache đảm bảo BM25 chỉ được build một lần trong suốt
+    vòng đời của process (quan trọng khi chạy trong Streamlit).
+    """
+    corpus = _load_corpus_from_chroma()
+    if not corpus:
+        raise ValueError(
+            "Corpus rỗng — hãy chạy Task 4 để index dữ liệu vào ChromaDB trước."
+        )
+    bm25_model = build_bm25_index(corpus)
+    return bm25_model, corpus
 
 
 def build_bm25_index(corpus: list[dict]):
@@ -27,17 +90,20 @@ def build_bm25_index(corpus: list[dict]):
 
     Args:
         corpus: List of {'content': str, 'metadata': dict}
-    """
-    # TODO: Implement BM25 index
-    #
-    # from rank_bm25 import BM25Okapi
-    #
-    # # Tokenize - có thể đơn giản split(), hoặc dùng underthesea cho tiếng Việt
-    # tokenized_corpus = [doc["content"].lower().split() for doc in corpus]
-    # bm25 = BM25Okapi(tokenized_corpus)
-    # return bm25
-    raise NotImplementedError("Implement build_bm25_index")
 
+    Returns:
+        BM25Okapi object đã được fit trên corpus.
+    """
+    from rank_bm25 import BM25Okapi
+
+    tokenized_corpus = [_tokenize(doc["content"]) for doc in corpus]
+    bm25 = BM25Okapi(tokenized_corpus)
+    return bm25
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
 
 def lexical_search(query: str, top_k: int = 10) -> list[dict]:
     """
@@ -50,33 +116,47 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
     Returns:
         List of {
             'content': str,
-            'score': float,      # BM25 score
+            'score': float,      # BM25 score (normalized, ≥ 0)
             'metadata': dict
         }
         Sorted by score descending.
+        Chỉ trả về các kết quả có score > 0 (có từ khóa khớp).
     """
-    # TODO: Implement lexical search
-    #
-    # tokenized_query = query.lower().split()
-    # scores = bm25.get_scores(tokenized_query)
-    #
-    # # Get top_k indices
-    # import numpy as np
-    # top_indices = np.argsort(scores)[::-1][:top_k]
-    #
-    # results = []
-    # for idx in top_indices:
-    #     if scores[idx] > 0:
-    #         results.append({
-    #             "content": CORPUS[idx]["content"],
-    #             "score": float(scores[idx]),
-    #             "metadata": CORPUS[idx]["metadata"]
-    #         })
-    # return results
-    raise NotImplementedError("Implement lexical_search")
+    import numpy as np
+
+    bm25, corpus = _get_bm25_index()
+
+    # Tokenize query theo cùng cách corpus
+    tokenized_query = _tokenize(query)
+    if not tokenized_query:
+        return []
+
+    scores = bm25.get_scores(tokenized_query)  # ndarray shape (N,)
+
+    # Lấy top_k indices sắp xếp giảm dần
+    top_indices = np.argsort(scores)[::-1][:top_k]
+
+    results: list[dict] = []
+    for idx in top_indices:
+        if scores[idx] <= 0:
+            break  # Các phần tử sau cũng ≤ 0, không có từ khớp
+        results.append(
+            {
+                "content": corpus[idx]["content"],
+                "score": round(float(scores[idx]), 4),
+                "metadata": corpus[idx]["metadata"],
+            }
+        )
+
+    return results
 
 
 if __name__ == "__main__":
+    import sys
+
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     # Test
     results = lexical_search("phương thức thanh toán shopee", top_k=5)
     for r in results:
