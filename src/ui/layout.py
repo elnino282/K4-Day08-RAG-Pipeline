@@ -15,7 +15,7 @@ STYLE_FILES = ("main.css", "sidebar.css", "chat.css", "composer.css", "responsiv
 def load_css() -> None:
     font_link = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">'
     css = "\n".join((STYLE_DIR / filename).read_text(encoding="utf-8") for filename in STYLE_FILES)
-    st.markdown(f"{font_link}\n<style>{css}</style>", unsafe_allow_html=True)
+    st.html(f"{font_link}\n<style>{css}</style>")
 
 
 def render_main_container():
