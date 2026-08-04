@@ -237,6 +237,26 @@ class TestTask4(unittest.TestCase):
         except NotImplementedError:
             self.skipTest("Chưa implement")
 
+    def test_chunk_preserves_document_metadata_and_adds_index(self):
+        """Mỗi chunk giữ metadata nguồn và có thứ tự chunk riêng."""
+        from src.task4_chunking_indexing import chunk_documents
+
+        document = {
+            "content": "Nội dung chính sách. " * 100,
+            "metadata": {
+                "source": "sample.md",
+                "type": "legal",
+                "customer_role": "buyer",
+            },
+        }
+
+        chunks = chunk_documents([document])
+
+        self.assertGreater(len(chunks), 0)
+        self.assertEqual(chunks[0]["metadata"]["source"], "sample.md")
+        self.assertEqual(chunks[0]["metadata"]["customer_role"], "buyer")
+        self.assertEqual(chunks[0]["metadata"]["chunk_index"], 0)
+
 
 # ===========================================================================
 # Task 5 — Semantic Search (6 điểm)
