@@ -15,6 +15,28 @@ def _as_score(value: Any) -> float | None:
         return None
 
 
+def _display_score(source: dict) -> float | None:
+    """Pick the score a reader can interpret, not the one used for ordering.
+
+    After RRF fusion (Task 7) `score` holds the fused rank score, which peaks near
+    1/(k+1) ~= 0.016 no matter how relevant the chunk is — rendered as a percentage
+    that reads as "3% phù hợp" for even a perfect match. `rerank_rrf` keeps the
+    per-ranker originals, so prefer the dense cosine similarity, which is a real
+    [0,1] relevance figure. Fall back to `score` for results that never went
+    through fusion (e.g. the PageIndex path).
+    """
+    dense_score = _as_score(source.get("dense_score"))
+    if dense_score is not None:
+        return dense_score
+
+    # Chunk chỉ do BM25 tìm ra: `bm25_score` là điểm thô (có thể > 20), không phải
+    # thang [0,1], nên hiển thị dưới dạng phần trăm sẽ sai. Bỏ badge thay vì bịa số.
+    if source.get("bm25_score") is not None:
+        return None
+
+    return _as_score(source.get("score"))
+
+
 def _normalize_source(source: Any) -> dict | None:
     if not isinstance(source, dict):
         return None
@@ -22,7 +44,7 @@ def _normalize_source(source: Any) -> dict | None:
     return {
         "name": str(metadata.get("source") or source.get("name") or "Tài liệu không rõ tên"),
         "type": str(metadata.get("type") or source.get("type") or "Tài liệu"),
-        "score": _as_score(source.get("score")),
+        "score": _display_score(source),
         "content": str(source.get("content") or ""),
     }
 
