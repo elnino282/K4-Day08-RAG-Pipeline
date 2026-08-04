@@ -13,9 +13,22 @@ STYLE_FILES = ("main.css", "sidebar.css", "chat.css", "composer.css", "responsiv
 
 
 def load_css() -> None:
-    font_link = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">'
-    css = "\n".join((STYLE_DIR / filename).read_text(encoding="utf-8") for filename in STYLE_FILES)
-    st.markdown(f"{font_link}\n<style>{css}</style>", unsafe_allow_html=True)
+    css = "\n".join(
+        (STYLE_DIR / filename).read_text(encoding="utf-8")
+        for filename in STYLE_FILES
+    )
+    font_import = (
+        "@import url('https://fonts.googleapis.com/css2?"
+        "family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');"
+    )
+    style_block = f"<style>\n{font_import}\n{css}\n</style>"
+
+    # st.html xử lý CSS-only block ổn định và không render nội dung CSS thành chữ.
+    # Giữ fallback để repo vẫn chạy được với các bản Streamlit cũ chưa có st.html.
+    if hasattr(st, "html"):
+        st.html(style_block)
+    else:
+        st.markdown(style_block, unsafe_allow_html=True)
 
 
 def render_main_container():

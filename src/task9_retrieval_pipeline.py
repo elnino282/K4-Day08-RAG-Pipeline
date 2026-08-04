@@ -27,7 +27,7 @@ Logic:
 
 from .task5_semantic_search import semantic_search
 from .task6_lexical_search import lexical_search
-from .task7_reranking import rerank_rrf
+from .task7_reranking import rerank_hybrid
 from .task8_pageindex_vectorless import pageindex_search
 
 
@@ -40,7 +40,7 @@ from .task8_pageindex_vectorless import pageindex_search
 # giá trị mẫu, mỗi corpus/embedding model sẽ cho khoảng điểm khác nhau.
 SCORE_THRESHOLD = 0.3   # Nếu best score (cosine gốc) < threshold → fallback PageIndex
 DEFAULT_TOP_K = 5
-RERANK_METHOD = "rrf"  # "cross_encoder" | "mmr" | "rrf"
+RERANK_METHOD = "rrf_jina"  # RRF -> Jina; Jina lỗi sẽ tự fallback về RRF
 
 
 def retrieve(
@@ -78,7 +78,7 @@ def retrieve(
         }
     """
     # Validate input
-    if not isinstance(query, str) or not query.strip():
+    if not isinstance(query, str) or not query.strip() or top_k <= 0:
         return []
 
     fetch_k = top_k * 3  # Lấy nhiều hơn để RRF có đủ candidates
@@ -88,7 +88,11 @@ def retrieve(
     #   - dense_results: điểm cosine GỐC, dùng để quyết định fallback ở Step 2
     #   - sparse_results: điểm BM25, dùng để RRF fusion ở Step 3
     # -------------------------------------------------------------------------
-    dense_results = semantic_search(query, top_k=fetch_k)
+    dense_results = semantic_search(
+        query,
+        top_k=fetch_k,
+        include_embeddings=False,
+    )
     sparse_results = lexical_search(query, top_k=fetch_k)
 
     # -------------------------------------------------------------------------
@@ -117,7 +121,13 @@ def retrieve(
     lists_to_fuse = [lst for lst in [dense_results, sparse_results] if lst]
 
     if use_reranking and lists_to_fuse:
-        merged = rerank_rrf(lists_to_fuse, top_k=fetch_k)
+        merged = rerank_hybrid(
+            query,
+            lists_to_fuse,
+            top_k=top_k,
+            candidate_pool_size=fetch_k,
+            use_jina=RERANK_METHOD == "rrf_jina",
+        )
     else:
         # Không rerank: nối, dedup theo content, sắp xếp theo cosine score
         seen: set[str] = set()

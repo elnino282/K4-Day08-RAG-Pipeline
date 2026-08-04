@@ -16,6 +16,7 @@
 .source-card { border:1px solid var(--line); border-radius:12px; background: var(--surface); padding:.65rem .85rem; margin-top:.4rem; }
 .source-header { display:flex; align-items:center; justify-content:space-between; gap:.75rem; }
 .source-name { font-size:.84rem; font-weight:700; color:var(--text); }
+.citation-number { color:var(--accent); font-weight:800; margin-right:.15rem; }
 .source-meta { display:flex; align-items:center; gap:.5rem; }
 .source-type { font-size:.72rem; color:var(--muted); text-transform:uppercase; font-weight:600; letter-spacing:.05em; }
 .source-badge { font-size:.73rem; font-weight:700; padding:.15rem .5rem; border-radius:12px; }
