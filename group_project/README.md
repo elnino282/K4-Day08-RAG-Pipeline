@@ -166,10 +166,10 @@ hỏi đang xử lý), mỗi message cắt còn 600 ký tự để không lấn 
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Chu Quang Hiếu | 2A202601344 | Thu thập dữ liệu, Chunking, Embedding & ChromaDB Indexing (Task 1-4) | Hoàn thành |
+| Hồ Ngọc Quỳnh | 2A202601684 | Tích hợp Retrieval Pipeline (Hybrid + Rerank + PageIndex) & Streamlit Chat UI (Task 5-9, app.py) | Hoàn thành |
+| Nguyễn Đình Liên Thành | 2A202601790 | Xây dựng LLM Generation với Citation, Conversation Memory & Prompting (Task 10) | Hoàn thành |
+| Hoàng Văn Huy | 2A202601356 | Xây dựng Golden Dataset, RAG Evaluation Pipeline & Báo cáo kết quả (Yêu cầu 2) | Hoàn thành |
 
 ---
 
