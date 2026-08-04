@@ -73,7 +73,10 @@ data/_tmp_pdf/
 
 # PageIndex cache
 pageindex_doc_ids.json
+.pageindex_doc_ids.json
+
 pageindex_pdfs/
+.pageindex_pdfs/
 
 # =========================
 # Jupyter
@@ -107,6 +110,12 @@ artifacts/
 tmp/
 temp/
 cache/
+
+# =========================
+# Task 8 — PageIndex temp files
+# =========================
+_pageindex_pdfs/
+.pageindex_doc_ids.json
 
 # =========================
 # macOS metadata
