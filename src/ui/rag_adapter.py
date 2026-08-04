@@ -50,14 +50,26 @@ def _normalize_source(source: Any) -> dict | None:
     return normalized
 
 
-def run_rag_query(query: str, generate_fn: Callable[..., Any] | None = None, top_k: int = DEFAULT_TOP_K) -> dict:
+def run_rag_query(
+    query: str,
+    generate_fn: Callable[..., Any] | None = None,
+    top_k: int = DEFAULT_TOP_K,
+    history: list[dict] | None = None,
+) -> dict:
     """Return the stable UI result shape for any RAG success/failure response."""
     if generate_fn is None:
         from src.task10_generation import generate_with_citation
 
         generate_fn = generate_with_citation
+
+    # `history` is only forwarded when there is something to forward, so callers
+    # that inject a two-argument generate_fn keep working for first-turn queries.
+    call_kwargs: dict = {"top_k": top_k}
+    if history:
+        call_kwargs["history"] = history
+
     try:
-        response = generate_fn(query, top_k=top_k)
+        response = generate_fn(query, **call_kwargs)
     except Exception as error:  # The UI must surface pipeline failures safely.
         return {"answer": "", "sources": [], "error": str(error) or "RAG request failed."}
 

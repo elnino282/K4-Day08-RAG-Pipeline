@@ -8,6 +8,7 @@ from src.ui.state import (
     complete_query,
     delete_conversation,
     get_active_conversation,
+    get_history,
     initialize_state,
     set_top_k,
     start_new_conversation,
@@ -71,6 +72,54 @@ class ConversationStateTests(unittest.TestCase):
         clear_all_conversations(state)
         self.assertEqual(len(state["conversations"]), 1)
         self.assertEqual(state["messages"], [])
+
+    def test_history_returns_completed_pairs_only(self):
+        state = {}
+        initialize_state(state)
+        token = claim_query(state, "Payment methods?")
+        complete_query(state, token, answer="Cards and wallets.", sources=[])
+
+        self.assertEqual(
+            get_history(state),
+            [
+                {"role": "user", "content": "Payment methods?"},
+                {"role": "assistant", "content": "Cards and wallets."},
+            ],
+        )
+
+    def test_history_excludes_current_question_and_failed_turns(self):
+        state = {}
+        initialize_state(state)
+        failed_token = claim_query(state, "Broken turn?")
+        complete_query(state, failed_token, answer="", sources=[], error="Gemini unavailable")
+        answered_token = claim_query(state, "Return window?")
+        complete_query(state, answered_token, answer="30 days.", sources=[])
+        claim_query(state, "And for sellers?")  # In flight, not yet answered.
+
+        self.assertEqual(
+            get_history(state),
+            [
+                {"role": "user", "content": "Return window?"},
+                {"role": "assistant", "content": "30 days."},
+            ],
+        )
+
+    def test_history_is_empty_for_a_fresh_conversation(self):
+        state = {}
+        initialize_state(state)
+
+        self.assertEqual(get_history(state), [])
+
+    def test_history_keeps_only_the_most_recent_messages(self):
+        state = {}
+        initialize_state(state)
+        for index in range(5):
+            token = claim_query(state, f"Question {index}?")
+            complete_query(state, token, answer=f"Answer {index}.", sources=[])
+
+        history = get_history(state, max_messages=4)
+
+        self.assertEqual([message["content"] for message in history], ["Question 3?", "Answer 3.", "Question 4?", "Answer 4."])
 
     def test_set_top_k_bounds(self):
         state = {}

@@ -27,3 +27,21 @@ class RagAdapterTests(unittest.TestCase):
         run_rag_query("test", generate_fn=mock_generate, top_k=7)
         self.assertEqual(passed_top_k, [7])
 
+    def test_adapter_forwards_history_when_present(self):
+        received = {}
+
+        def mock_generate(query, top_k, history):
+            received["history"] = history
+            return {"answer": "OK", "sources": []}
+
+        history = [{"role": "user", "content": "Payment methods?"}, {"role": "assistant", "content": "Cards."}]
+        run_rag_query("And refunds?", generate_fn=mock_generate, history=history)
+        self.assertEqual(received["history"], history)
+
+    def test_adapter_omits_history_argument_when_there_is_none(self):
+        def mock_generate(query, top_k):  # Deliberately has no history parameter.
+            return {"answer": "OK", "sources": []}
+
+        result = run_rag_query("First question", generate_fn=mock_generate, history=[])
+        self.assertEqual(result["error"], None)
+

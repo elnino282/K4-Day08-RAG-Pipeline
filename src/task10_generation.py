@@ -33,6 +33,14 @@ GEMINI_MAX_ATTEMPTS = 3
 UNVERIFIED_ANSWER = "Tôi không thể xác minh thông tin này từ nguồn hiện có."
 SERVICE_ERROR_ANSWER = "Không thể tạo câu trả lời vì dịch vụ Gemini hiện không khả dụng."
 
+# Conversation memory: tối đa 3 lượt hỏi-đáp gần nhất được đưa vào prompt.
+# Giữ nhỏ vì context còn phải chứa top_k chunk tài liệu.
+MAX_HISTORY_MESSAGES = 6
+# Câu trả lời cũ thường dài; chỉ cần phần đầu để LLM nắm ngữ cảnh.
+MAX_HISTORY_CHARS = 600
+# Câu hỏi standalone luôn ngắn — chặn trên để lỗi model không tạo query rác.
+CONDENSE_MAX_OUTPUT_TOKENS = 128
+
 
 SYSTEM_PROMPT = """Bạn là trợ lý hỗ trợ thương mại điện tử, trả lời hoàn toàn bằng tiếng Việt.
 
@@ -47,6 +55,19 @@ Quy tắc bắt buộc:
 6. Trả lời trực tiếp, tự nhiên và ngắn gọn; không nhắc đến CONTEXT, prompt hoặc quá trình truy xuất.
 7. Nếu câu hỏi chứa một giả định trái với bằng chứng, hãy sửa giả định đó một cách lịch sự và nêu thông tin đúng.
 8. Không thêm mục "Nguồn" hoặc "Tài liệu tham khảo" ở cuối câu trả lời.
+9. Lịch sử hội thoại chỉ dùng để hiểu câu hỏi hiện tại đang nói về cái gì.
+   Mọi khẳng định trong câu trả lời vẫn phải lấy từ CONTEXT của lượt này.
+"""
+
+CONDENSE_SYSTEM_PROMPT = """Bạn viết lại câu hỏi cuối của người dùng thành một câu hỏi độc lập,
+đầy đủ ngữ cảnh, để dùng cho việc tìm kiếm tài liệu.
+
+Quy tắc:
+1. Thay các đại từ và tham chiếu ngầm ("cái đó", "chính sách này", "còn với người bán thì sao")
+   bằng danh từ cụ thể lấy từ lịch sử hội thoại.
+2. Giữ nguyên ngôn ngữ của câu hỏi gốc.
+3. Nếu câu hỏi đã độc lập, trả lại nguyên văn.
+4. Chỉ xuất đúng một câu hỏi. Không giải thích, không thêm dấu ngoặc kép, không thêm tiền tố.
 """
 
 
@@ -158,6 +179,73 @@ CÂU HỎI:
 Hãy trả lời câu hỏi chỉ từ CONTEXT. Dùng nhãn số ngắn gọn được phép và không chép tên tài liệu vào câu trả lời."""
 
 
+def normalize_history(history: list[dict] | None) -> list[dict]:
+    """Chuẩn hoá lịch sử hội thoại thành danh sách message dùng được cho prompt.
+
+    - Bỏ message rỗng, sai định dạng, hoặc role không phải user/assistant.
+    - Cắt mỗi message còn ``MAX_HISTORY_CHARS`` ký tự.
+    - Giữ ``MAX_HISTORY_MESSAGES`` message gần nhất và bỏ các lượt ``assistant``
+      đứng đầu (Gemini yêu cầu ``contents`` mở đầu bằng lượt của người dùng).
+    """
+    if not isinstance(history, list):
+        return []
+
+    cleaned: list[dict] = []
+    for message in history:
+        if not isinstance(message, dict):
+            continue
+        role = str(message.get("role") or "").strip().lower()
+        if role == "model":
+            role = "assistant"
+        if role not in {"user", "assistant"}:
+            continue
+        content = str(message.get("content") or "").strip()
+        if not content:
+            continue
+        cleaned.append({"role": role, "content": content[:MAX_HISTORY_CHARS]})
+
+    recent = cleaned[-MAX_HISTORY_MESSAGES:]
+    while recent and recent[0]["role"] != "user":
+        recent.pop(0)
+    return recent
+
+
+def _history_to_contents(history: list[dict] | None) -> list[dict]:
+    """Đổi message chuẩn hoá sang schema ``contents`` của Gemini (user/model)."""
+    return [
+        {
+            "role": "model" if message["role"] == "assistant" else "user",
+            "parts": [{"text": message["content"]}],
+        }
+        for message in normalize_history(history)
+    ]
+
+
+def _condense_query(query: str, history: list[dict]) -> str:
+    """Viết lại câu hỏi nối tiếp thành câu hỏi độc lập để retrieval tìm đúng.
+
+    Không có bước này, câu hỏi kiểu "còn với người bán thì sao?" sẽ được embed
+    nguyên văn và retrieval trả về chunk lạc đề — lịch sử chỉ giúp LLM diễn đạt
+    chứ không giúp tìm tài liệu. Mọi lỗi đều lùi về câu hỏi gốc.
+    """
+    if not history:
+        return query
+
+    try:
+        condensed = _call_gemini(
+            f"Câu hỏi cuối của người dùng: {query}\n\nViết lại thành câu hỏi độc lập:",
+            history=history,
+            system_prompt=CONDENSE_SYSTEM_PROMPT,
+            max_output_tokens=CONDENSE_MAX_OUTPUT_TOKENS,
+        ).strip()
+    except Exception:
+        return query
+
+    # Model đôi khi trả nhiều dòng hoặc bọc dấu ngoặc kép; lấy dòng đầu tiên.
+    first_line = next((line for line in condensed.splitlines() if line.strip()), "")
+    return first_line.strip().strip('"').strip() or query
+
+
 def _response_error(response: requests.Response) -> str:
     """Lấy thông báo lỗi Gemini ngắn gọn mà không làm lộ API key."""
     try:
@@ -190,8 +278,17 @@ def _extract_gemini_text(payload: dict) -> str:
     return text
 
 
-def _call_gemini(user_prompt: str) -> str:
-    """Gọi Gemini generateContent qua REST, retry với lỗi mạng/429/5xx."""
+def _call_gemini(
+    user_prompt: str,
+    history: list[dict] | None = None,
+    system_prompt: str = SYSTEM_PROMPT,
+    max_output_tokens: int = MAX_OUTPUT_TOKENS,
+) -> str:
+    """Gọi Gemini generateContent qua REST, retry với lỗi mạng/429/5xx.
+
+    ``history`` là các lượt hỏi-đáp trước đó đã chuẩn hoá; chúng được đưa vào
+    ``contents`` trước lượt hiện tại để model hiểu câu hỏi nối tiếp.
+    """
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     model = os.getenv("GEMINI_MODEL", GEMINI_MODEL).strip().removeprefix("models/")
     if not api_key:
@@ -201,8 +298,9 @@ def _call_gemini(user_prompt: str) -> str:
 
     url = f"{GEMINI_API_BASE}/{quote(model, safe='')}:generateContent"
     body = {
-        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
-        "contents": [
+        "system_instruction": {"parts": [{"text": system_prompt}]},
+        "contents": _history_to_contents(history)
+        + [
             {
                 "role": "user",
                 "parts": [{"text": user_prompt}],
@@ -211,7 +309,7 @@ def _call_gemini(user_prompt: str) -> str:
         "generationConfig": {
             "temperature": TEMPERATURE,
             "topP": TOP_P,
-            "maxOutputTokens": MAX_OUTPUT_TOKENS,
+            "maxOutputTokens": max_output_tokens,
         },
     }
 
@@ -255,6 +353,7 @@ def _result(
     sources: list[dict],
     retrieval_source: str,
     error: str | None = None,
+    search_query: str | None = None,
 ) -> dict:
     result = {
         "answer": answer,
@@ -264,22 +363,37 @@ def _result(
     }
     if error:
         result["generation_error"] = error
+    if search_query:
+        result["search_query"] = search_query
     return result
 
 
-def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
-    """Chạy retrieval -> reorder -> Gemini -> kiểm tra citation."""
+def generate_with_citation(
+    query: str,
+    top_k: int = TOP_K,
+    history: list[dict] | None = None,
+) -> dict:
+    """Chạy condense -> retrieval -> reorder -> Gemini -> kiểm tra citation.
+
+    ``history`` là các lượt hỏi-đáp trước đó dạng ``{"role", "content"}``.
+    Khi có lịch sử, câu hỏi được viết lại thành dạng độc lập trước khi retrieval,
+    và lịch sử cũng được đưa vào prompt sinh câu trả lời.
+    """
     if not isinstance(query, str) or not query.strip() or top_k <= 0:
         return _result(UNVERIFIED_ANSWER, [], "none")
 
+    normalized_history = normalize_history(history)
+    search_query = _condense_query(query.strip(), normalized_history)
+
     try:
-        ranked_chunks = retrieve(query.strip(), top_k=top_k)
+        ranked_chunks = retrieve(search_query, top_k=top_k)
     except Exception as exc:
         return _result(
             "Không thể truy xuất tài liệu để trả lời câu hỏi lúc này.",
             [],
             "none",
             f"{type(exc).__name__}: {exc}",
+            search_query=search_query,
         )
 
     ranked_chunks = [
@@ -288,7 +402,7 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
         if isinstance(chunk, dict) and str(chunk.get("content") or "").strip()
     ]
     if not ranked_chunks:
-        return _result(UNVERIFIED_ANSWER, [], "none")
+        return _result(UNVERIFIED_ANSWER, [], "none", search_query=search_query)
 
     retrieval_source = str(ranked_chunks[0].get("source") or "hybrid")
     cited_chunks = _attach_citation_indices(ranked_chunks)
@@ -296,13 +410,14 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
     user_prompt = _build_user_prompt(query, reordered_chunks)
 
     try:
-        answer = _call_gemini(user_prompt).strip()
+        answer = _call_gemini(user_prompt, history=normalized_history).strip()
     except Exception as exc:
         return _result(
             SERVICE_ERROR_ANSWER,
             cited_chunks,
             retrieval_source,
             f"{type(exc).__name__}: {exc}",
+            search_query=search_query,
         )
 
     if answer != UNVERIFIED_ANSWER and not _has_allowed_citation(
@@ -313,9 +428,10 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
             cited_chunks,
             retrieval_source,
             "Gemini trả lời nhưng không sử dụng citation hợp lệ.",
+            search_query=search_query,
         )
 
-    return _result(answer, cited_chunks, retrieval_source)
+    return _result(answer, cited_chunks, retrieval_source, search_query=search_query)
 
 
 if __name__ == "__main__":

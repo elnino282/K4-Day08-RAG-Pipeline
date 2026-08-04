@@ -14,7 +14,14 @@ from src.ui.layout import load_css, render_main_container
 from src.ui.rag_adapter import run_rag_query
 from src.ui.sidebar import render_sidebar
 from src.ui.sources import render_sources
-from src.ui.state import claim_query, complete_query, consume_pending_query, get_active_conversation, initialize_state
+from src.ui.state import (
+    claim_query,
+    complete_query,
+    consume_pending_query,
+    get_active_conversation,
+    get_history,
+    initialize_state,
+)
 
 PROJECT_ROOT = Path(__file__).parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -42,7 +49,9 @@ def main() -> None:
             with st.chat_message("assistant", avatar="🤖"):
                 loading_indicator(LOADING_TEXT)
                 top_k = st.session_state.get("top_k", 5)
-                result = run_rag_query(query.strip(), top_k=top_k)
+                # claim_query already appended this turn's question, which get_history skips.
+                history = get_history(st.session_state)
+                result = run_rag_query(query.strip(), top_k=top_k, history=history)
                 complete_query(st.session_state, token, **result)
                 if result["error"]:
                     st.error(result["error"])

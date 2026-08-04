@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import MutableMapping
 from uuid import uuid4
 
-from src.ui.constants import DEFAULT_TOP_K, MAX_TITLE_LENGTH, NEW_CONVERSATION_LABEL
+from src.ui.constants import DEFAULT_TOP_K, HISTORY_MESSAGE_LIMIT, MAX_TITLE_LENGTH, NEW_CONVERSATION_LABEL
 
 
 def _new_conversation() -> dict:
@@ -41,6 +41,29 @@ def get_active_conversation(state: MutableMapping) -> dict:
             return conversation
     state["active_conversation"] = state["conversations"][0]["id"]
     return state["conversations"][0]
+
+
+def get_history(state: MutableMapping, max_messages: int = HISTORY_MESSAGE_LIMIT) -> list[dict]:
+    """Return completed exchanges of the active conversation, oldest first.
+
+    Only user/assistant pairs that produced a real answer are kept: a failed turn
+    would teach the model that an error message is a valid reply, and the trailing
+    user message is the question being answered right now, not history.
+    """
+    history: list[dict] = []
+    pending_question: str | None = None
+
+    for message in get_active_conversation(state)["messages"]:
+        role = message.get("role")
+        if role == "user":
+            pending_question = str(message.get("content") or "")
+        elif role == "assistant" and pending_question is not None:
+            if not message.get("error"):
+                history.append({"role": "user", "content": pending_question})
+                history.append({"role": "assistant", "content": str(message.get("content") or "")})
+            pending_question = None
+
+    return history[-max_messages:] if max_messages > 0 else []
 
 
 def _conversation_title(query: str) -> str:

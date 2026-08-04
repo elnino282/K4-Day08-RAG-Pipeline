@@ -14,6 +14,8 @@ INVALID_RAG_RESPONSE = "RAG returned an invalid response."
 SOURCE_LABEL = "Nguồn tham khảo"
 MAX_TITLE_LENGTH = 42
 DEFAULT_TOP_K = 5
+# Số message lịch sử tối đa gửi kèm mỗi câu hỏi (3 lượt hỏi-đáp).
+HISTORY_MESSAGE_LIMIT = 6
 
 PROMPT_CARDS = [
     {

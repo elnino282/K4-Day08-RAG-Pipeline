@@ -549,8 +549,8 @@ run_dashboard()
 
 ### Kiến Trúc Hệ Thống
 
-> Chi tiết đầy đủ (score lifecycle, fallback logic, provider chain, điểm giòn đã biết):
-> xem [ARCHITECTURE.md](ARCHITECTURE.md).
+> Chi tiết thành phần, tham số và các quyết định thiết kế: xem
+> [group_project/README.md](group_project/README.md).
 
 ```mermaid
 flowchart TB
@@ -568,13 +568,13 @@ flowchart TB
         GEN --> PIPE["Task 9<br/>retrieve()"]
         PIPE --> DENSE["Task 5<br/>Semantic (cosine)"]
         PIPE --> SPARSE["Task 6<br/>BM25"]
-        DENSE --> GATE{"cosine top-1<br/>>= 0.39 ?"}
-        SPARSE --> RRF["Task 7<br/>RRF k=60"]
+        DENSE --> GATE{"cosine top-1<br/>>= SCORE_THRESHOLD ?"}
+        SPARSE --> RRF["Task 7<br/>RRF k=60 -> Jina rerank<br/>(lỗi Jina: giữ thứ hạng RRF)"]
         GATE -- có --> RRF
         GATE -- không --> PI["Task 8<br/>PageIndex fallback"]
-        RRF --> CTX["reorder front+back[::-1]<br/>+ format context"]
+        RRF --> CTX["reorder front+back[::-1]<br/>+ format context có nhãn [1]..[n]"]
         PI --> CTX
-        CTX --> LLM["LLM<br/>OpenRouter -> OpenAI -> Gemini"]
+        CTX --> LLM["Gemini generateContent<br/>(REST, retry 429/5xx)"]
         LLM --> ANS["Câu trả lời có citation<br/>+ danh sách nguồn"]
     end
 
@@ -592,6 +592,10 @@ flowchart TB
   dùng để sắp xếp kết quả cuối.
 - UI hiển thị `dense_score` chứ không hiển thị `rrf_score` (điểm RRF đỉnh ≈ 0.016, hiển thị
   dạng phần trăm sẽ sai).
+- **Conversation memory**: câu hỏi nối tiếp được viết lại thành câu hỏi độc lập trước khi
+  retrieval (`_condense_query`), rồi 3 lượt hỏi-đáp gần nhất được đưa vào prompt sinh câu trả lời.
+  Không có bước viết lại, câu như "còn với người bán thì sao?" sẽ được embed nguyên văn và
+  retrieval trả về chunk lạc đề.
 
 ---
 

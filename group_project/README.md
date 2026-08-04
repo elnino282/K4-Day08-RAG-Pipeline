@@ -69,8 +69,6 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 
 ## Kiến Trúc Hệ Thống
 
-> Tài liệu kiến trúc đầy đủ: [../ARCHITECTURE.md](../ARCHITECTURE.md)
-
 ### Tổng quan luồng
 
 ```mermaid
@@ -89,13 +87,13 @@ flowchart TB
         GEN --> PIPE["Task 9<br/>retrieve()"]
         PIPE --> DENSE["Task 5<br/>Semantic (cosine)"]
         PIPE --> SPARSE["Task 6<br/>BM25"]
-        DENSE --> GATE{"cosine top-1<br/>>= 0.39 ?"}
-        SPARSE --> RRF["Task 7<br/>RRF k=60"]
+        DENSE --> GATE{"cosine top-1<br/>>= SCORE_THRESHOLD ?"}
+        SPARSE --> RRF["Task 7<br/>RRF k=60 -> Jina rerank<br/>(lỗi Jina: giữ thứ hạng RRF)"]
         GATE -- có --> RRF
         GATE -- không --> PI["Task 8<br/>PageIndex fallback"]
-        RRF --> CTX["reorder front+back[::-1]<br/>+ format context"]
+        RRF --> CTX["reorder front+back[::-1]<br/>+ format context có nhãn [1]..[n]"]
         PI --> CTX
-        CTX --> LLM["LLM<br/>OpenRouter -> OpenAI -> Gemini"]
+        CTX --> LLM["Gemini generateContent<br/>(REST, retry 429/5xx)"]
         LLM --> ANS["Câu trả lời có citation<br/>+ danh sách nguồn"]
     end
 
@@ -110,11 +108,29 @@ flowchart TB
 ```mermaid
 flowchart LR
     APP["app.py"] --> ADAPT["ui/rag_adapter.py<br/>chuẩn hoá response,<br/>bọc mọi exception"]
-    APP --> STATE["ui/state.py<br/>conversations, top_k,<br/>processing_query_token"]
+    APP --> STATE["ui/state.py<br/>conversations, top_k,<br/>get_history()"]
     APP --> VIEW["ui/chat, composer,<br/>sidebar, sources, layout"]
+    STATE -->|"3 lượt gần nhất"| ADAPT
     ADAPT --> GEN["src/task10_generation"]
     GEN --> PIPE["src/task9_retrieval_pipeline"]
 ```
+
+### Conversation memory (multi-turn)
+
+```mermaid
+flowchart TB
+    Q["Câu hỏi nối tiếp<br/>'Còn với người bán thì sao?'"] --> H{"có lịch sử?"}
+    H -- không --> RAW["dùng nguyên câu hỏi"]
+    H -- có --> CD["_condense_query()<br/>Gemini viết lại thành<br/>câu hỏi độc lập"]
+    CD -->|"lỗi / rỗng"| RAW
+    CD --> SQ["'Quy định của Shopee với người bán<br/>trong chính sách trả hàng là gì?'"]
+    RAW --> RET["retrieve()"]
+    SQ --> RET
+    RET --> GEN["Gemini generateContent<br/>contents = 3 lượt gần nhất + lượt này"]
+```
+
+Lịch sử chỉ gồm các cặp hỏi-đáp **đã trả lời thành công** (`get_history` bỏ lượt lỗi và bỏ câu
+hỏi đang xử lý), mỗi message cắt còn 600 ký tự để không lấn chỗ của chunk tài liệu trong prompt.
 
 ### Thành phần & tham số
 
@@ -125,10 +141,11 @@ flowchart LR
 | Vector store | ChromaDB persistent, collection `ecommerce_support_docs`, cosine | [../src/task4_chunking_indexing.py](../src/task4_chunking_indexing.py) |
 | Dense retrieval | cosine similarity, `score = 1 - distance` | [../src/task5_semantic_search.py](../src/task5_semantic_search.py) |
 | Sparse retrieval | `BM25Okapi`, corpus nạp từ ChromaDB | [../src/task6_lexical_search.py](../src/task6_lexical_search.py) |
-| Fusion | RRF `k = 60` (Jina cross-encoder có sẵn, không nằm trong luồng mặc định) | [../src/task7_reranking.py](../src/task7_reranking.py) |
-| Fallback | PageIndex vectorless, ngưỡng cosine `0.39` | [../src/task8_pageindex_vectorless.py](../src/task8_pageindex_vectorless.py) |
+| Fusion + rerank | RRF `k = 60` rồi Jina `jina-reranker-v2-base-multilingual`; Jina lỗi thì giữ thứ hạng RRF | [../src/task7_reranking.py](../src/task7_reranking.py) |
+| Fallback | PageIndex vectorless, ngưỡng `SCORE_THRESHOLD` trên cosine gốc | [../src/task8_pageindex_vectorless.py](../src/task8_pageindex_vectorless.py) |
 | Pipeline | `fetch_k = top_k * 3`, gắn nhãn `source = hybrid \| pageindex` | [../src/task9_retrieval_pipeline.py](../src/task9_retrieval_pipeline.py) |
-| Generation | temp 0.3, top_p 0.9, 5 chunks, reorder `front + back[::-1]` | [../src/task10_generation.py](../src/task10_generation.py) |
+| Generation | Gemini REST `generateContent`, top_p 0.9, 5 chunks, reorder `front + back[::-1]`, citation `[1]..[n]` | [../src/task10_generation.py](../src/task10_generation.py) |
+| Conversation memory | 3 lượt gần nhất, condense câu hỏi trước retrieval | [../src/task10_generation.py](../src/task10_generation.py), [../src/ui/state.py](../src/ui/state.py) |
 | UI | Streamlit, hiển thị nguồn + `dense_score`, `top_k` chỉnh 1–10 | [../app.py](../app.py), [../src/ui/](../src/ui/) |
 
 ### Ba quyết định thiết kế đáng lưu ý
@@ -137,7 +154,8 @@ flowchart LR
    một tập chunk và cùng `chunk_id` — điều kiện bắt buộc để RRF ghép được kết quả 2 ranker.
 2. **Fallback so ngưỡng với điểm cosine gốc**, không phải điểm RRF. Điểm RRF đỉnh ≈ `1/(60+1)`
    ≈ 0.016 bất kể nội dung liên quan hay không; so với nó thì nhánh PageIndex không bao giờ chạy.
-   Ngưỡng 0.39 lấy từ đo thật: query liên quan 0.403–0.759, query lạc đề 0.130–0.380.
+   `SCORE_THRESHOLD` trong [../src/task9_retrieval_pipeline.py](../src/task9_retrieval_pipeline.py)
+   hiện vẫn là giá trị mẫu `0.3` kèm `TODO` calibrate — cần tự đo trên corpus của nhóm.
 3. **UI hiển thị `dense_score`, không hiển thị `rrf_score`.** Nếu hiển thị điểm RRF dạng phần
    trăm, một chunk khớp hoàn hảo vẫn hiện "3% phù hợp". Chunk chỉ do BM25 tìm ra thì ẩn badge
    (BM25 không nằm trong thang `[0,1]`).
