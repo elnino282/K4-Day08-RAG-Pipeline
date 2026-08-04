@@ -1,0 +1,8 @@
+[data-testid="stSidebar"] { background:var(--sidebar); border-right:1px solid var(--line); }
+[data-testid="stSidebar"] > div:first-child { display:flex; flex-direction:column; min-height:100vh; padding:1.1rem .8rem; }
+.brand { display:flex; align-items:flex-start; gap:.65rem; margin:.25rem .25rem 1.3rem; color:var(--text); }
+.brand-mark { color:var(--accent); font-size:1.2rem; line-height:1; }.brand small { display:block; color:var(--muted); font-size:.7rem; font-weight:400; line-height:1.35; margin-top:.2rem; }
+[data-testid="stSidebar"] .stButton > button { background:transparent; border:0; border-radius:10px; box-shadow:none; color:var(--text); font-size:.83rem; justify-content:flex-start; min-height:2.2rem; padding:.4rem .55rem; text-align:left; }
+[data-testid="stSidebar"] .stButton > button:hover { background:var(--soft); color:var(--text); }
+[data-testid="stSidebar"] .stButton:first-of-type > button { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow); font-weight:600; margin-bottom:1rem; }
+.sidebar-footer { margin-top:auto; border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; line-height:1.45; padding:.85rem .3rem .2rem; }.sidebar-footer strong,.sidebar-footer span { display:block; }.sidebar-footer strong { color:var(--text); margin-bottom:.2rem; }

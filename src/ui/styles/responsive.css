@@ -1,0 +1,1 @@
+@media (max-width: 780px) { .block-container { padding:1.25rem 1rem 6.5rem; }.app-header > span { display:none; }.welcome-state { margin-top:7vh; }.welcome-state h1 { font-size:1.85rem; } [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stChatMessageContent"] { max-width:88%; } }

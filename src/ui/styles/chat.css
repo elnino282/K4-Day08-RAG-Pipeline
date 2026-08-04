@@ -1,0 +1,9 @@
+[data-testid="stChatMessage"] { background:transparent; padding:.3rem 0; }
+[data-testid="stChatMessage"] [data-testid="stChatMessageContent"] { color:var(--text); line-height:1.65; max-width:100%; }
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) { justify-content:flex-end; }
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stChatMessageContent"] { background:var(--soft); border:1px solid color-mix(in srgb, var(--accent) 14%, var(--line)); border-radius:18px 18px 4px 18px; max-width:76%; padding:.65rem .9rem; }
+.welcome-state { margin:12vh auto 1.7rem; max-width:640px; text-align:center; }.welcome-state h1 { color:var(--text); font-size:2.25rem; letter-spacing:-.055em; margin:.2rem 0 .75rem; }.welcome-state p:last-child { color:var(--muted); margin:0 auto; max-width:520px; }
+.stButton > button { border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--text); box-shadow:none; }.stButton > button:hover { border-color:var(--accent); color:var(--text); }
+.assistant-actions { align-items:center; color:var(--muted); display:flex; gap:.65rem; margin:.7rem 0 .3rem; }.assistant-actions span { cursor:default; font-size:.95rem; }
+.source-card { align-items:center; border:1px solid var(--line); border-radius:10px; display:flex; justify-content:space-between; gap:.75rem; margin:.35rem 0; padding:.55rem .7rem; }.source-card strong { font-size:.82rem; }.source-card span { color:var(--muted); font-size:.75rem; white-space:nowrap; }
+.loading-indicator { align-items:center; color:var(--muted); display:flex; font-size:.86rem; gap:.55rem; padding:.5rem 0; }.loading-indicator span { animation:pulse 1s infinite; background:var(--accent); border-radius:50%; height:.45rem; width:.45rem; }@keyframes pulse {50%{opacity:.25;transform:scale(.7)}}
